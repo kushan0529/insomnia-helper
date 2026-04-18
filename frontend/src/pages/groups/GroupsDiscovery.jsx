@@ -1,8 +1,8 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getGroups } from '../../utils/groups';
 import GroupCard from '../../components/groups/GroupCard';
+import { Search, Plus, MapPin, Users } from 'lucide-react';
 
 const GroupsDiscovery = () => {
   const [groups, setGroups] = useState([]);
@@ -23,20 +23,24 @@ const GroupsDiscovery = () => {
   });
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8 relative min-h-[80vh]">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
-        <div>
-          <h1 className="text-4xl md:text-5xl font-black text-white uppercase tracking-tighter mb-2" style={{ fontFamily: "'Bebas Neue', sans-serif" }}>
-            Groups & <span className="text-[#C9A84C]">Meetups</span>
+    <div className="max-w-[1240px] mx-auto px-6 py-12">
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-12">
+        <div className="max-w-[600px]">
+          <span className="text-[10px] font-bold tracking-[3px] uppercase text-g mb-3 block">Community Support</span>
+          <h1 className="font-heading text-5xl md:text-6xl font-bold text-white mb-4">
+            Find your <span className="text-g italic">circle.</span>
           </h1>
-          <p className="text-[#9A9A9A] text-lg">Find your tribe. You don't have to face this alone.</p>
+          <p className="text-[#8892B0] text-sm md:text-[15px] leading-relaxed">
+            Support groups are more than just talking — they are proof that you don't have to face this alone. Host or join a local or online circle.
+          </p>
         </div>
         
-        <div className="flex flex-col sm:flex-row gap-4">
+        <div className="relative w-full lg:w-[360px]">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[#4A5370]" size={18} />
           <input 
             type="text" 
-            placeholder="Search by title or city..." 
-            className="bg-[#1C1C1C] border border-[#2a2a2a] text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/40 transition-all w-full sm:w-64"
+            placeholder="Search by city, category or title..." 
+            className="w-full bg-s1/50 border border-white/5 text-white pl-12 pr-4 py-3.5 rounded-2xl focus:outline-none focus:border-g/30 transition-all text-sm font-body"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -44,15 +48,15 @@ const GroupsDiscovery = () => {
       </div>
 
       {/* Filter Bar */}
-      <div className="flex overflow-x-auto pb-4 mb-8 gap-3 no-scrollbar">
+      <div className="flex overflow-x-auto pb-4 mb-10 gap-2 no-scrollbar border-b border-white/5">
         {categories.map(cat => (
           <button
             key={cat}
             onClick={() => setFilter(cat)}
-            className={`px-5 py-2 rounded-full whitespace-nowrap transition-all border ${
+            className={`px-6 py-2 rounded-full whitespace-nowrap transition-all text-[12px] font-medium border ${
               filter === cat 
-              ? 'bg-[#C9A84C] text-black border-[#C9A84C] font-bold' 
-              : 'bg-[#1C1C1C] text-[#9A9A9A] border-[#2a2a2a] hover:border-[#C9A84C]/50'
+              ? 'bg-g/10 border-g/30 text-g shadow-[0_4px_12px_rgba(201,168,76,0.1)]' 
+              : 'bg-transparent text-[#8892B0] border-transparent hover:text-white'
             }`}
           >
             {cat}
@@ -68,14 +72,14 @@ const GroupsDiscovery = () => {
           ))}
         </div>
       ) : (
-        <div className="flex flex-col items-center justify-center py-20 text-center">
-          <div className="w-20 h-20 mb-6 text-[#C9A84C] opacity-20">
-            <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+        <div className="glass-card flex flex-col items-center justify-center py-24 text-center">
+          <div className="w-20 h-20 mb-8 rounded-full bg-g/5 border border-g/10 flex items-center justify-center">
+            <Users className="text-g/20" size={36} />
           </div>
-          <h3 className="text-2xl font-bold text-white mb-2">No groups yet</h3>
-          <p className="text-[#9A9A9A] mb-8">Be the first to host a group and support your community.</p>
-          <Link to="/groups/create" className="bg-[#C9A84C] text-black px-8 py-3 rounded-md font-bold hover:bg-[#d4b96a] transition-colors">
-            + Host a Group
+          <h3 className="font-heading text-2xl font-bold text-white mb-3 tracking-wide text-pretty">No circles found for this search</h3>
+          <p className="text-[#8892B0] text-sm mb-8 max-w-[320px]">Be the one to start it. Hosting a circle is as helpful to you as it is to them.</p>
+          <Link to="/groups/create" className="btn-gold flex items-center gap-2">
+            <Plus size={18} /> Host a Group
           </Link>
         </div>
       )}
@@ -83,10 +87,10 @@ const GroupsDiscovery = () => {
       {/* Floating Action Button */}
       <Link 
         to="/groups/create" 
-        className="fixed bottom-10 right-10 w-16 h-16 bg-[#C9A84C] text-black rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-transform z-50 text-3xl font-bold"
-        title="Host a Group"
+        className="fixed bottom-10 right-10 w-14 h-14 bg-g text-black rounded-full flex items-center justify-center shadow-[0_12px_48px_rgba(201,168,76,0.4)] hover:scale-110 hover:-translate-y-1 transition-all z-50 border-2 border-white/10"
+        title="Host a Circle"
       >
-        +
+        <Plus size={24} strokeWidth={3} />
       </Link>
     </div>
   );

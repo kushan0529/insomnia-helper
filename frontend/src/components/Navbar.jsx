@@ -1,27 +1,29 @@
-import React, { useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { Moon, Menu, X, ChevronDown, LogOut, User, Settings } from 'lucide-react';
+import { Moon, Menu, X, LogOut, User, Settings, ArrowRight } from 'lucide-react';
 import { logout } from '../redux/slices/authSlice';
 import { getGroups } from '../utils/groups';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const { user, token } = useSelector(state => state.auth);
+  const { user, token } = useSelector(state => state.auth || { user: null, token: null });
   const dispatch = useDispatch();
+  const location = useLocation();
 
   const navLinks = [
-    { name: 'HOME', path: '/home' },
-    { name: 'GROUPS', path: '/groups' },
-    { name: 'THE CIRCLE', path: '/rooms' },
-    { name: 'PROGRAMS', path: '/programs' },
-    { name: 'DASHBOARD', path: '/dashboard' },
+    { name: 'Home', path: '/home', icon: '🏠' },
+    { name: 'Mood', path: '/mood', icon: '💭' },
+    { name: 'Programs', path: '/programs', icon: '🧠' },
+    { name: 'Circles', path: '/rooms', icon: '⭕' },
+    { name: 'Groups', path: '/groups', icon: '👥' },
+    { name: 'Journal', path: '/journal', icon: '📓' },
   ];
 
   const [pendingTotal, setPendingTotal] = useState(0);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (user) {
       const groups = getGroups();
       const myHosted = groups.filter(g => g.host.name === user.username);
@@ -35,95 +37,125 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 h-[72px] z-50 bg-black/85 backdrop-blur-xl border-b border-white/10 px-6 md:px-12 flex items-center justify-between">
+    <nav className="fixed top-0 left-0 right-0 h-[62px] z-[100] bg-ink/80 backdrop-blur-[28px] border-b border-g/10 px-4 md:px-8 flex items-center justify-between">
       {/* LEFT: LOGO */}
-      <Link to="/home" className="flex items-center gap-3 group">
-        <Moon className="text-fc-gold group-hover:rotate-12 transition-transform" size={24} />
-        <span className="font-heading text-2xl text-white tracking-[0.1em]">INSOMNIA HELPER</span>
+      <Link to="/home" className="flex items-center gap-2 group shrink-0">
+        <span className="font-heading text-lg md:text-xl font-bold text-g tracking-wider">
+          🌙 Insomnia<em className="text-white not-italic">Helper</em>
+        </span>
       </Link>
 
       {/* CENTER: NAV LINKS (Desktop) */}
-      <div className="hidden md:flex items-center gap-8">
+      <div className="hidden lg:flex items-center gap-1 flex-1 px-8">
         {navLinks.map((link) => (
           <NavLink
             key={link.name}
             to={link.path}
             className={({ isActive }) => `
-              font-body text-[14px] transition-all duration-200 tracking-wider flex items-center gap-1.5
-              ${isActive ? 'text-fc-gold border-b border-fc-gold pb-1' : 'text-white/80 hover:text-fc-gold'}
+              shrink-0 px-4 py-1.5 rounded-full text-[12px] font-medium transition-all duration-300 flex items-center gap-2
+              ${isActive 
+                ? 'text-g bg-g/10 border border-g/20 shadow-[0_0_15px_rgba(201,168,76,0.1)]' 
+                : 'text-[#8892B0] hover:text-white hover:bg-white/5 border border-transparent'}
             `}
           >
+            <span>{link.icon}</span>
             {link.name}
-            {link.name === 'GROUPS' && pendingTotal > 0 && (
-              <span className="w-2 h-2 bg-fc-gold rounded-full animate-pulse shadow-[0_0_8px_rgba(201,168,76,0.8)]" />
+            {link.name === 'Groups' && pendingTotal > 0 && (
+              <span className="w-1.5 h-1.5 bg-g rounded-full animate-pulse" />
             )}
           </NavLink>
         ))}
       </div>
 
-      {/* RIGHT: AUTH */}
-      <div className="flex items-center gap-4">
+      {/* RIGHT: AUTH & ACTIONS */}
+      <div className="flex items-center gap-4 shrink-0">
         {token ? (
           <div className="relative">
             <button 
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              className="w-10 h-10 rounded-full border border-fc-gold overflow-hidden hover:scale-110 transition-transform"
+              className="w-9 h-9 rounded-full border border-g/30 bg-s1/50 flex items-center justify-center font-heading text-g hover:scale-105 transition-transform"
             >
-              <div className="w-full h-full bg-fc-grey flex items-center justify-center font-heading text-fc-gold">
-                {user?.username?.[0]?.toUpperCase() || 'U'}
-              </div>
+              {user?.username?.[0]?.toUpperCase() || 'U'}
             </button>
 
             {isDropdownOpen && (
-              <div className="absolute top-12 right-0 w-48 bg-black/95 border border-white/10 backdrop-blur-2xl rounded-lg py-2 shadow-2xl">
-                <Link to="/profile" className="flex items-center gap-3 px-4 py-3 text-sm text-white/80 hover:bg-fc-gold/10 hover:text-fc-gold transition-colors font-body">
-                  <User size={16} /> PROFILE
+              <div className="absolute top-12 right-0 w-48 bg-s1 border border-white/10 backdrop-blur-3xl rounded-xl py-2 shadow-2xl animate-pg-in">
+                <Link to="/profile" onClick={() => setIsDropdownOpen(false)} className="flex items-center gap-3 px-4 py-3 text-[13px] text-white/80 hover:bg-g/10 hover:text-g transition-colors">
+                  <User size={14} /> Profile
                 </Link>
-                <Link to="/my-groups" className="flex items-center justify-between px-4 py-3 text-sm text-white/80 hover:bg-fc-gold/10 hover:text-fc-gold transition-colors font-body">
-                  <span className="flex items-center gap-3"><Moon size={16} /> MY GROUPS</span>
-                  {pendingTotal > 0 && <span className="bg-fc-gold text-black text-[10px] font-black px-1.5 py-0.5 rounded-sm">{pendingTotal}</span>}
+                <Link to="/my-groups" onClick={() => setIsDropdownOpen(false)} className="flex items-center justify-between px-4 py-3 text-[13px] text-white/80 hover:bg-g/10 hover:text-g transition-colors">
+                  <span className="flex items-center gap-3"><Moon size={14} /> My Groups</span>
+                  {pendingTotal > 0 && <span className="bg-g text-black text-[10px] font-bold px-1.5 py-0.5 rounded-sm">{pendingTotal}</span>}
                 </Link>
-                <Link to="/settings" className="flex items-center gap-3 px-4 py-3 text-sm text-white/80 hover:bg-fc-gold/10 hover:text-fc-gold transition-colors font-body">
-                  <Settings size={16} /> SETTINGS
+                <Link to="/settings" onClick={() => setIsDropdownOpen(false)} className="flex items-center gap-3 px-4 py-3 text-[13px] text-white/80 hover:bg-g/10 hover:text-g transition-colors">
+                  <Settings size={14} /> Settings
                 </Link>
                 <div className="h-px bg-white/5 my-1" />
                 <button 
                   onClick={handleLogout}
-                  className="w-full flex items-center gap-3 px-4 py-3 text-sm text-fc-red hover:bg-fc-red/10 transition-colors font-body text-left"
+                  className="w-full flex items-center gap-3 px-4 py-3 text-[13px] text-red-400 hover:bg-red-400/10 transition-colors text-left"
                 >
-                  <LogOut size={16} /> LOGOUT
+                  <LogOut size={14} /> Logout
                 </button>
               </div>
             )}
           </div>
         ) : (
-          <Link to="/register" className="hidden md:block bg-fc-gold text-black font-heading text-[13px] px-6 py-2.5 rounded-[2px] hover:brightness-110 transition-all shadow-[0_0_15px_rgba(201,168,76,0.3)]">
-            JOIN NOW
+          <Link to="/register" className="btn-gold !py-2 !px-5 flex items-center gap-2">
+            Find a Group <ArrowRight size={14} />
           </Link>
         )}
 
-        {/* Hamburger */}
-        <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="md:hidden text-white">
-          {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
+        {/* Hamburger for mobile */}
+        <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="lg:hidden text-[#8892B0] hover:text-white">
+          {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
 
       {/* MOBILE MENU */}
       {isMenuOpen && (
-        <div className="fixed inset-0 top-[72px] bg-black/95 backdrop-blur-3xl z-[100] md:hidden px-8 py-12 flex flex-col items-center gap-10">
+        <div className="fixed inset-0 top-[62px] bg-ink/98 backdrop-blur-3xl z-[100] lg:hidden px-8 py-10 flex flex-col items-center gap-6 overflow-y-auto">
           {navLinks.map((link) => (
             <Link
               key={link.name}
               to={link.path}
               onClick={() => setIsMenuOpen(false)}
-              className="font-heading text-4xl text-white hover:text-fc-gold transition-colors"
+              className="font-heading text-3xl text-white hover:text-g transition-colors flex items-center gap-3"
             >
+              <span className="text-2xl">{link.icon}</span>
               {link.name}
+              {link.name === 'Groups' && pendingTotal > 0 && (
+                <span className="bg-g text-black text-xs font-bold px-2 py-0.5 rounded-full">{pendingTotal}</span>
+              )}
             </Link>
           ))}
+          {token && (
+            <div className="w-full flex flex-col gap-4 mt-4 border-t border-white/5 pt-8">
+               <Link 
+                 to="/profile" 
+                 onClick={() => setIsMenuOpen(false)} 
+                 className="flex items-center justify-center gap-3 text-white/60 hover:text-white transition-colors"
+               >
+                 <User size={20} /> <span className="font-heading text-xl">Profile</span>
+               </Link>
+               <Link 
+                 to="/settings" 
+                 onClick={() => setIsMenuOpen(false)} 
+                 className="flex items-center justify-center gap-3 text-white/60 hover:text-white transition-colors"
+               >
+                 <Settings size={20} /> <span className="font-heading text-xl">Settings</span>
+               </Link>
+               <button 
+                 onClick={() => { handleLogout(); setIsMenuOpen(false); }}
+                 className="flex items-center justify-center gap-3 text-red-400 mt-4"
+               >
+                 <LogOut size={20} /> <span className="font-heading text-xl">Sign Out</span>
+               </button>
+            </div>
+          )}
           {!token && (
-            <Link to="/register" onClick={() => setIsMenuOpen(false)} className="w-full text-center bg-fc-gold text-black font-heading text-2xl py-4 mt-8">
-              JOIN NOW
+            <Link to="/register" onClick={() => setIsMenuOpen(false)} className="btn-gold !w-full !text-center !py-4 !text-lg mt-4">
+              Join the Circle
             </Link>
           )}
         </div>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { loadUser } from './redux/slices/authSlice';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home from './pages/Home';
@@ -12,11 +13,11 @@ import RoomDetail from './pages/RoomDetail';
 import Stories from './pages/Stories';
 import PostStory from './pages/PostStory';
 import Rooms from './pages/Rooms';
-import AudioLibrary from './pages/AudioLibrary';
 import CBTProgram from './pages/CBTProgram';
 import Journal from './pages/Journal';
 import SleepLog from './pages/SleepLog';
 import { Toaster } from 'react-hot-toast';
+import AnimatedBackground from './components/AnimatedBackground';
 
 // Groups & Meetups
 import GroupsDiscovery from './pages/groups/GroupsDiscovery';
@@ -27,6 +28,8 @@ import ShadowTalk from './pages/ShadowTalk';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
 import StoryDetail from './pages/StoryDetail';
+import Mood from './pages/Mood';
+import Affirmations from './pages/Affirmations';
 import { getCurrentUser, setCurrentUser, getGroups } from './utils/groups';
 
 const ApprovalBanner = () => {
@@ -52,11 +55,11 @@ const ApprovalBanner = () => {
   if (approvedGroups.length === 0) return null;
 
   return (
-    <div className="fixed top-[72px] left-0 right-0 z-[45] flex flex-col gap-1 items-center pointer-events-none">
+    <div className="fixed top-[72px] left-0 right-0 z-[110] flex flex-col gap-1 items-center pointer-events-none">
       {approvedGroups.map(group => (
-        <div key={group.id} className="bg-[#C9A84C] text-black px-6 py-2 shadow-2xl flex items-center gap-4 pointer-events-auto animate-slide-down">
+        <div key={group.id} className="bg-[#C9A84C] text-black px-6 py-2 shadow-2xl flex items-center gap-4 pointer-events-auto animate-pg-in">
           <span className="font-bold text-sm tracking-wide">
-            You've been approved for <span className="uppercase font-black">{group.title}</span>!
+            Approved for <span className="uppercase font-black">{group.title}</span>!
           </span>
           <button onClick={() => dismiss(group.id)} className="hover:scale-125 transition-transform">
             ✕
@@ -69,7 +72,15 @@ const ApprovalBanner = () => {
 
 const AppContent = () => {
   const { token, user } = useSelector(state => state.auth || { token: localStorage.getItem('token'), user: null });
+  const dispatch = useDispatch();
   const location = useLocation();
+
+  React.useEffect(() => {
+    if (token && !user) {
+      dispatch(loadUser());
+    }
+  }, [token, user, dispatch]);
+
   const isStandalone = ['/register', '/login', '/'].includes(location.pathname);
 
   // Sync Redux user with Groups localStorage user
@@ -87,33 +98,22 @@ const AppContent = () => {
   }, [user]);
 
   return (
-    <div className="relative min-h-screen bg-fc-black text-fc-white selection:bg-fc-gold selection:text-fc-black overflow-x-hidden">
-      {/* Cinematic Global Background Overlays */}
-      <div className="bg-fixed-image" />
-      <div className="bg-dark-overlay" />
-      <div className="bg-gradient-mesh" />
+    <div className="relative min-h-screen bg-ink text-white selection:bg-g selection:text-black overflow-x-hidden">
+      <AnimatedBackground />
 
-      {/* Cinematic Post-Processing Overlays only for main pages */}
-      {!isStandalone && (
-        <>
-          <div className="film-grain" />
-          <div className="vignette" />
-          <div className="tyler-flash" id="tyler-flash" />
-        </>
-      )}
+      <Navbar />
 
-      {!isStandalone && <Navbar />}
-
-      {/* Approval Notification Banner */}
       <ApprovalBanner />
       
-      <main className={`relative z-10 min-h-screen ${!isStandalone ? 'pt-[72px]' : ''}`}>
+      <main className="relative z-10 pt-[62px]">
         <Routes>
-          <Route path="/" element={<Register />} />
+          <Route path="/" element={<Home />} />
           <Route path="/home" element={<Home />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           
+          <Route path="/mood" element={<Mood />} />
+          <Route path="/affirmations" element={<Affirmations />} />
           <Route path="/dashboard" element={token ? <Dashboard /> : <Navigate to="/login" />} />
           <Route path="/my-stories" element={token ? <MyStories /> : <Navigate to="/login" />} />
           <Route path="/stories" element={<Stories />} />
@@ -121,11 +121,9 @@ const AppContent = () => {
           <Route path="/rooms" element={<Rooms />} />
           <Route path="/rooms/:id" element={<RoomDetail />} />
           <Route path="/programs" element={<CBTProgram />} />
-          <Route path="/audio" element={<AudioLibrary />} />
           <Route path="/sleep-log" element={token ? <SleepLog /> : <Navigate to="/login" />} />
           <Route path="/journal" element={token ? <Journal /> : <Navigate to="/login" />} />
           
-          {/* Groups Routes */}
           <Route path="/groups" element={<GroupsDiscovery />} />
           <Route path="/groups/create" element={token ? <CreateGroup /> : <Navigate to="/login" />} />
           <Route path="/groups/:id" element={<GroupDetail />} />
@@ -137,18 +135,20 @@ const AppContent = () => {
         </Routes>
       </main>
 
-      {!isStandalone && <Footer />}
+      <Footer />
       
       <Toaster 
         position="bottom-right"
         toastOptions={{
+          className: 'glass',
           style: {
-            background: '#0a0a0a',
-            color: '#d4d4d4',
-            border: '1px solid #8b0000',
-            padding: '16px',
-            fontFamily: 'Special Elite',
-            borderRadius: '0',
+            background: 'rgba(10, 13, 26, 0.95)',
+            color: '#FFFFFF',
+            border: '1px solid rgba(201, 168, 76, 0.2)',
+            borderLeft: '4px solid #C9A84C',
+            fontFamily: 'Outfit',
+            borderRadius: '12px',
+            fontSize: '14px',
           }
         }}
       />

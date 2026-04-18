@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import api from '../api';
 import { toast } from 'react-hot-toast';
+import { Moon, Sun, Trash2, Clock, Sparkles, Activity, FileText } from 'lucide-react';
 
 const SleepLog = () => {
   const [logs, setLogs] = useState([]);
@@ -31,7 +32,7 @@ const SleepLog = () => {
       setLogs(logsRes.data);
       setStats(statsRes.data);
     } catch (err) {
-      toast.error("COULD NOT RETRIEVE SLEEP DATA.");
+      toast.error("Could not retrieve sleep data.");
     } finally {
       setLoading(false);
     }
@@ -57,11 +58,11 @@ const SleepLog = () => {
         mood,
         notes
       });
-      toast.success("NIGHT RECORDED.");
+      toast.success("Night recorded successfully.");
       fetchData();
       setNotes('');
     } catch (err) {
-      toast.error("COULD NOT RECORD NIGHT.");
+      toast.error("Could not record night.");
     } finally {
       setSubmitting(false);
     }
@@ -74,181 +75,224 @@ const SleepLog = () => {
     }
   };
 
-  const getQualityLabel = (q) => ["😵 TERRIBLE", "😞 POOR", "😐 OK", "🙂 GOOD", "😴 GREAT"][q-1];
-  const getQualityColor = (q) => ["#8b0000", "#92400e", "#4b5563", "#166534", "#c9a84c"][q-1];
+  const getQualityLabel = (q) => ["Restless", "Poor", "Sufficient", "Good", "Restorative"][q-1];
+  const getQualityColor = (q) => ["#FF6B6B", "#FF9F43", "#54A0FF", "#5F27CD", "#C9A84C"][q-1];
 
   return (
-    <div className="min-h-screen relative z-10 pt-[72px] pb-20 px-6 max-w-[1200px] mx-auto flex flex-col lg:flex-row gap-12">
+    <div className="max-w-[1240px] mx-auto px-6 py-12 flex flex-col lg:flex-row gap-8 lg:gap-12">
       {/* LEFT: LOG FORM */}
-      <div className="w-full lg:w-[420px]">
+      <div className="w-full lg:w-[400px]">
         <motion.div 
-          initial={{ x: -20, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          className="bg-[#050008]/80 backdrop-blur-xl border border-fc-gold/20 p-10 rounded-3xl sticky top-24"
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="glass p-8 md:p-10 border-g/10 shadow-[0_32px_128px_rgba(0,0,0,0.5)] lg:sticky lg:top-24"
         >
-          <h2 className="font-heading text-4xl text-fc-gold tracking-tight mb-2">LOG LAST NIGHT</h2>
-          <p className="font-body text-white/40 text-xs tracking-widest uppercase mb-10">Track it or keep pretending it's fine.</p>
+          <div className="flex items-center gap-3 mb-2 text-g">
+            <Moon size={20} />
+            <span className="text-[10px] font-bold tracking-[3px] uppercase">Night Sanctuary</span>
+          </div>
+          <h2 className="font-heading text-4xl font-bold text-white mb-2 italic">Record Rest</h2>
+          <p className="font-body text-[#8892B0] text-sm mb-10 leading-relaxed">Honest tracking is the first step toward better healing.</p>
 
-          <form onSubmit={handleSubmit} className="space-y-8">
-            <div className="grid grid-cols-2 gap-6">
-              <div className="space-y-3">
-                <label className="font-heading text-[10px] text-fc-gold tracking-[0.2em]">LIGHTS OUT</label>
-                <input 
-                  type="time" 
-                  value={bedtime}
-                  onChange={(e) => setBedtime(e.target.value)}
-                  className="w-full bg-black/40 border-b border-fc-gold/30 px-4 py-3 font-heading text-xl text-white outline-none focus:border-fc-gold transition-colors"
-                />
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-[10px] font-bold text-[#4A5370] tracking-[2px] uppercase ml-1">Fell Asleep</label>
+                <div className="relative">
+                  <Moon className="absolute left-3 top-1/2 -translate-y-1/2 text-[#4A5370]" size={14} />
+                  <input 
+                    type="time" 
+                    value={bedtime}
+                    onChange={(e) => setBedtime(e.target.value)}
+                    className="w-full bg-s1/40 border border-white/5 pl-9 pr-4 py-3 rounded-xl font-heading text-lg text-white outline-none focus:border-g/30 transition-all"
+                  />
+                </div>
               </div>
-              <div className="space-y-3">
-                <label className="font-heading text-[10px] text-fc-gold tracking-[0.2em]">PULLED BACK</label>
-                <input 
-                  type="time" 
-                  value={wakeTime}
-                  onChange={(e) => setWakeTime(e.target.value)}
-                  className="w-full bg-black/40 border-b border-fc-gold/30 px-4 py-3 font-heading text-xl text-white outline-none focus:border-fc-gold transition-colors"
-                />
+              <div className="space-y-2">
+                <label className="text-[10px] font-bold text-[#4A5370] tracking-[2px] uppercase ml-1">Woke Up</label>
+                <div className="relative">
+                  <Sun className="absolute left-3 top-1/2 -translate-y-1/2 text-[#4A5370]" size={14} />
+                  <input 
+                    type="time" 
+                    value={wakeTime}
+                    onChange={(e) => setWakeTime(e.target.value)}
+                    className="w-full bg-s1/40 border border-white/5 pl-9 pr-4 py-3 rounded-xl font-heading text-lg text-white outline-none focus:border-g/30 transition-all"
+                  />
+                </div>
               </div>
             </div>
 
-            <div className="py-4 text-center bg-fc-gold/5 border border-dashed border-fc-gold/20">
-               <span className="font-heading text-3xl text-fc-gold">
-                 {calculateDuration().toFixed(1)} <span className="text-sm">HRS SLEEP</span>
+            <div className="p-4 rounded-2xl bg-g/5 border border-dashed border-g/20 text-center">
+               <span className="font-heading text-4xl font-bold text-g">
+                 {calculateDuration().toFixed(1)} <span className="text-[12px] font-body text-white/40 uppercase tracking-widest ml-1">Hours Captured</span>
                </span>
             </div>
 
-            <div className="space-y-4">
-              <label className="font-heading text-[10px] text-fc-gold tracking-[0.2em]">HOW WAS THE QUALITY?</label>
+            <div className="space-y-3">
+              <label className="text-[10px] font-bold text-[#4A5370] tracking-[2px] uppercase ml-1">Sleep Quality</label>
               <div className="grid grid-cols-5 gap-2">
                  {[1,2,3,4,5].map(q => (
                    <button
                      key={q}
                      type="button"
                      onClick={() => setQuality(q)}
-                     className={`h-12 flex items-center justify-center text-lg border transition-all ${
-                       quality === q ? 'bg-fc-gold scale-110 border-fc-gold' : 'bg-white/5 border-white/10'
+                     className={`h-12 rounded-xl flex items-center justify-center text-xl border transition-all ${
+                       quality === q ? 'bg-g/10 border-g text-g shadow-[0_0_20px_rgba(201,168,76,0.1)] scale-[1.05]' : 'bg-s1/30 border-white/5 text-[#4A5370]'
                      }`}
-                     title={getQualityLabel(q)}
                    >
                      {["😵", "😞", "😐", "🙂", "😴"][q-1]}
                    </button>
                  ))}
               </div>
-              <div className="text-center font-body text-[10px] text-white/40 italic">{getQualityLabel(quality)}</div>
+              <p className="text-center text-[10px] font-bold text-g/60 uppercase tracking-widest leading-none mt-1">{getQualityLabel(quality)}</p>
             </div>
 
-            <div className="space-y-4">
-              <label className="font-heading text-[10px] text-fc-gold tracking-[0.2em]">ANYTHING ELSE?</label>
-              <textarea 
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                placeholder="NIGHTMARES, WOKE UP AT 3AM, STRESS..."
-                className="w-full bg-transparent border-b border-white/10 py-2 font-body text-sm text-white outline-none focus:border-fc-gold transition-colors resize-none h-20"
-              />
+            <div className="space-y-2">
+              <label className="text-[10px] font-bold text-[#4A5370] tracking-[2px] uppercase ml-1">Personal Notes</label>
+              <div className="relative">
+                <FileText className="absolute left-4 top-4 text-[#4A5370]" size={14} />
+                <textarea 
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  placeholder="Atmosphere, internal state, reflections..."
+                  className="w-full bg-s1/30 border border-white/5 rounded-xl pl-10 pr-4 py-3 font-body text-[14px] text-white outline-none focus:border-g/30 transition-all resize-none h-24 italic"
+                />
+              </div>
             </div>
 
             <button 
               type="submit"
               disabled={submitting}
-              className="w-full bg-gradient-to-r from-[#8b0000] to-[#c9a84c] py-5 font-heading text-xl text-black tracking-widest hover:brightness-110 transition-all disabled:opacity-50"
+              className="btn-gold w-full flex items-center justify-center gap-2 group disabled:opacity-50"
             >
-              {submitting ? 'RECORDING...' : 'RECORD THIS NIGHT'}
+              {submitting ? 'Recording...' : 'Record Sanctuary Night'}
+              {!submitting && <Sparkles size={16} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" /> }
             </button>
           </form>
         </motion.div>
       </div>
 
       {/* RIGHT: HISTORY + CHARTS */}
-      <div className="flex-1 space-y-12">
+      <div className="flex-grow space-y-8">
         {/* STATS SUMMARY */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
            {[
-             { label: 'AVG SLEEP', val: stats?.avgDuration || '0.0', unit: 'HRS' },
-             { label: 'BEST NIGHT', val: stats?.bestNight || '0.0', unit: 'HRS' },
-             { label: 'STREAK', val: stats?.streak || '0', unit: 'DAYS' },
-             { label: 'TOTAL NIGHTS', val: stats?.totalLogs || '0', unit: 'LOGS' }
+             { label: 'Avg Rest', val: stats?.avgDuration || '0.0', unit: 'HRS', icon: Clock },
+             { label: 'Peak Night', val: stats?.bestNight || '0.0', unit: 'HRS', icon: Activity },
+             { label: 'Consistency', val: stats?.streak || '0', unit: 'DAYS', icon: Sparkles },
+             { label: 'Total Logs', val: stats?.totalLogs || '0', unit: 'ENTRIES', icon: FileText }
            ].map((s, i) => (
-             <div key={i} className="bg-black/40 border border-fc-gold/10 p-6 rounded-2xl">
-                <div className="font-heading text-4xl text-fc-gold mb-1">{s.val}</div>
-                <div className="font-body text-[10px] text-white/30 tracking-widest uppercase">{s.label}</div>
+             <div key={i} className="glass p-5 flex flex-col items-center text-center border-white/5">
+                <div className="w-8 h-8 rounded-lg bg-g/5 flex items-center justify-center text-g mb-3">
+                   <s.icon size={16} />
+                </div>
+                <div className="font-heading text-3xl font-bold text-white mb-1 leading-none">{s.val}</div>
+                <div className="text-[9px] font-bold text-[#4A5370] tracking-[2px] uppercase">{s.label}</div>
              </div>
            ))}
         </div>
 
         {/* CHART SECTION */}
-        <div className="bg-black/40 border border-white/5 p-8 rounded-3xl h-[400px]">
-           <h3 className="font-heading text-xs text-fc-gold tracking-[0.2em] mb-8">SLEEP HISTORY (LAST 14 NIGHTS)</h3>
+        <div className="glass p-8 md:p-10 border-white/5 h-[400px]">
+           <div className="flex items-center justify-between mb-8">
+              <h3 className="text-[11px] font-bold text-g uppercase tracking-[3px]">Sleep Architecture</h3>
+              <span className="text-[10px] text-[#4A5370] uppercase tracking-widest italic">Last 14 Nights</span>
+           </div>
            <ResponsiveContainer width="100%" height="100%">
              <AreaChart data={logs.slice(0, 14).reverse()}>
                <defs>
                  <linearGradient id="colorSleep" x1="0" y1="0" x2="0" y2="1">
-                   <stop offset="5%" stopColor="#8b0000" stopOpacity={0.8}/>
-                   <stop offset="95%" stopColor="#8b0000" stopOpacity={0}/>
+                   <stop offset="5%" stopColor="#C9A84C" stopOpacity={0.3}/>
+                   <stop offset="95%" stopColor="#C9A84C" stopOpacity={0}/>
                  </linearGradient>
                </defs>
-               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
+               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.03)" />
                <XAxis 
                  dataKey="createdAt" 
                  axisLine={false} 
                  tickLine={false} 
-                 tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 10, fontFamily: 'Special Elite' }}
+                 tick={{ fill: '#4A5370', fontSize: 10, fontWeight: 'bold' }}
                  tickFormatter={(v) => new Date(v).toLocaleDateString(undefined, { day: 'numeric', month: 'short' })}
                />
                <YAxis 
                  axisLine={false} 
                  tickLine={false} 
-                 tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 10, fontFamily: 'Special Elite' }}
+                 tick={{ fill: '#4A5370', fontSize: 10, fontWeight: 'bold' }}
                />
                <Tooltip 
-                 contentStyle={{ backgroundColor: '#050008', border: '1px solid #c9a84c', borderRadius: '12px' }}
-                 itemStyle={{ color: '#c9a84c', fontFamily: 'Special Elite' }}
+                 contentStyle={{ backgroundColor: 'rgba(10, 13, 26, 0.95)', border: '1px solid rgba(201, 168, 76, 0.2)', borderRadius: '16px', boxShadow: '0 20px 40px rgba(0,0,0,0.4)', padding: '12px' }}
+                 itemStyle={{ color: '#C9A84C', fontWeight: 'bold', fontSize: '13px' }}
+                 labelStyle={{ color: '#8892B0', fontSize: '11px', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '1px' }}
+                 cursor={{ stroke: 'rgba(201, 168, 76, 0.1)', strokeWidth: 2 }}
                />
-               <Area type="monotone" dataKey="sleepDuration" stroke="#c9a84c" fillOpacity={1} fill="url(#colorSleep)" />
+               <Area 
+                  type="monotone" 
+                  dataKey="sleepDuration" 
+                  stroke="#C9A84C" 
+                  strokeWidth={3}
+                  fillOpacity={1} 
+                  fill="url(#colorSleep)" 
+                  animationDuration={2000}
+               />
              </AreaChart>
            </ResponsiveContainer>
         </div>
 
         {/* LOG HISTORY */}
         <div className="space-y-4">
-           <h3 className="font-heading text-xs text-white/40 tracking-[0.2em] uppercase">PAST NIGHTS</h3>
+           <h3 className="text-[11px] font-bold text-white/40 uppercase tracking-[3px] ml-1">Past Sanctuary Records</h3>
            <div className="space-y-3">
               <AnimatePresence>
                 {logs.map((log) => (
                   <motion.div 
                     key={log._id}
                     layout
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="flex items-center justify-between bg-black/20 border border-white/5 p-5 pr-8 rounded-2xl group hover:border-white/20 transition-all border-l-[4px]"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="flex flex-col sm:flex-row items-center justify-between glass p-5 md:px-8 bg-white/5 border-white/5 group hover:border-g/20 transition-all border-l-[4px]"
                     style={{ borderLeftColor: getQualityColor(log.quality) }}
                   >
-                    <div className="flex gap-8 items-center">
-                       <div>
-                          <div className="font-heading text-lg text-white">
-                            {new Date(log.createdAt).toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' }).toUpperCase()}
-                          </div>
-                          <div className="font-body text-[10px] text-white/40 tracking-widest uppercase">
-                            {log.bedtime} → {log.wakeTime}
-                          </div>
+                    <div className="flex gap-4 md:gap-8 items-center w-full sm:w-auto mb-4 sm:mb-0">
+                       <div className="w-12 h-12 rounded-2xl bg-s1 flex flex-col items-center justify-center shrink-0">
+                         <span className="text-white font-bold text-[16px] leading-tight">{new Date(log.createdAt).getDate()}</span>
+                         <span className="text-[8px] text-[#4A5370] font-bold uppercase tracking-widest">{new Date(log.createdAt).toLocaleDateString(undefined, { month: 'short' })}</span>
                        </div>
-                       <div className="text-center">
-                          <div className="font-heading text-3xl text-fc-gold leading-none">{log.sleepDuration.toFixed(1)}</div>
-                          <div className="font-body text-[10px] text-white/30 uppercase tracking-tighter">HRS</div>
+                       <div>
+                          <div className="font-heading text-lg font-bold text-white leading-tight">
+                            {new Date(log.createdAt).toLocaleDateString(undefined, { weekday: 'long' }).toUpperCase()}
+                          </div>
+                          <div className="font-body text-[10px] text-[#4A5370] font-bold uppercase tracking-widest mt-0.5">
+                            {log.bedtime} — {log.wakeTime}
+                          </div>
                        </div>
                     </div>
-                    
-                    <div className="flex items-center gap-12">
-                       <div className="hidden md:block">
-                          <div className="font-body text-xs text-white/60 text-right line-clamp-1 max-w-[200px] italic">
-                            {log.notes || "No notes recording."}
+
+                    <div className="flex items-center justify-between sm:justify-end gap-12 w-full sm:w-auto">
+                       <div className="flex flex-col items-center">
+                          <div className="font-heading text-3xl font-bold text-g leading-tight">{log.sleepDuration.toFixed(1)}</div>
+                          <div className="text-[8px] text-[#4A5370] font-bold uppercase tracking-widest">Hours</div>
+                       </div>
+                       <div className="hidden xl:block">
+                          <div className="font-body text-[13px] text-[#8892B0] text-right line-clamp-1 max-w-[200px] italic">
+                            "{log.notes || "Peaceful night silently recorded."}"
                           </div>
                        </div>
-                       <div className="text-2xl">{["😵", "😞", "😐", "🙂", "😴"][log.quality-1]}</div>
-                       <button onClick={() => handleDelete(log._id)} className="opacity-0 group-hover:opacity-40 hover:!opacity-100 text-fc-red transition-all">🗑</button>
+                       <div className="text-2xl drop-shadow-[0_0_10px_rgba(255,255,255,0.1)]">{["😵", "😞", "😐", "🙂", "😴"][log.quality-1]}</div>
+                       <button 
+                         onClick={() => handleDelete(log._id)} 
+                         className="p-2.5 rounded-xl bg-red-500/5 text-red-500/20 hover:text-red-500 hover:bg-red-500/10 transition-all"
+                       >
+                         <Trash2 size={16} />
+                       </button>
                     </div>
                   </motion.div>
                 ))}
               </AnimatePresence>
+              {logs.length === 0 && (
+                <div className="text-center py-16 glass border-dashed border-white/5 opacity-40">
+                   <p className="text-[11px] font-bold uppercase tracking-[4px]">No nights have been woven yet</p>
+                </div>
+              )}
            </div>
         </div>
       </div>

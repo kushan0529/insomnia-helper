@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
@@ -7,155 +6,149 @@ import {
   Users, 
   Brain, 
   MessageSquare, 
-  Home as HomeIcon, 
+  Wind, 
   ArrowRight,
   Shield,
-  Heart
+  Moon,
+  Sparkles,
+  Calendar,
+  CloudMoon
 } from 'lucide-react';
-import styles from './Dashboard.module.css';
 
 const Dashboard = () => {
-  const { user } = useSelector(state => state.auth);
+  const { user } = useSelector(state => state.auth || { user: null });
+
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good morning";
+    if (hour < 18) return "Good afternoon";
+    return "Good evening";
+  };
 
   const modules = [
     {
-      title: "SHADOW TALK",
-      tagline: "BLIND IDENTITY REVEAL",
-      desc: "Connect anonymously. Identities only reveal when both of you agree to unmask.",
-      icon: <MessageSquare size={32} />,
+      title: "Shadow Talk",
+      tagline: "Anonymous Support",
+      desc: "Connect safely with others who understand the weight of the night.",
+      icon: <MessageSquare size={24} />,
       path: "/shadow-talk",
-      color: "border-fc-gold/20",
-      btnText: "ENTER SHADOWS"
+      color: "border-g/10"
     },
     {
-      title: "RE-WIRE",
-      tagline: "CBT TREATMENT",
-      desc: "Scientific tools to dismantle the structures of insomnia and anxiety.",
-      icon: <Brain size={32} />,
+      title: "CBT Programs",
+      tagline: "Clinical Toolkit",
+      desc: "Evidence-based tools to rewire your relationship with sleep and anxiety.",
+      icon: <Brain size={24} />,
       path: "/programs",
-      color: "border-fc-gold/20",
-      btnText: "START PROGRAM"
+      color: "border-g/10"
     },
     {
-      title: "SQUADS",
-      tagline: "GROUP MEETUPS",
-      desc: "Find your tribe. Real people, real meetups, real support.",
-      icon: <Users size={32} />,
+      title: "Support Circles",
+      tagline: "Community Meetups",
+      desc: "Find your tribe. Local and online circles for shared healing.",
+      icon: <Users size={24} />,
       path: "/groups",
-      color: "border-[#C9A84C]/40",
-      btnText: "FIND GROUPS",
+      color: "border-g/30",
       highlight: true
     },
     {
-      title: "BASE CAMP",
-      tagline: "HOME BASE",
-      desc: "Return to where it all begins. Your center in the chaos.",
-      icon: <HomeIcon size={32} />,
-      path: "/home",
-      color: "border-white/5",
-      btnText: "GO HOME"
+      title: "Soundscapes",
+      tagline: "Auditory Rest",
+      desc: "Desaturated frequencies and stories designed for deep relaxation.",
+      icon: <CloudMoon size={24} />,
+      path: "/audio",
+      color: "border-white/5"
     }
   ];
 
+  const stats = [
+    { label: 'Current Streak', value: '12 Days', icon: Sparkles, color: 'text-g' },
+    { label: 'Circle Status', value: 'Active', icon: Shield, color: 'text-blue-400' },
+    { label: 'Next Session', value: 'Tonight', icon: Calendar, color: 'text-purple-400' }
+  ];
+
   return (
-    <div className="min-h-screen relative z-10 pt-[72px] pb-12 px-6 md:px-12">
+    <div className="max-w-[1240px] mx-auto px-6 py-12">
       {/* Header Section */}
-      <div className="max-w-6xl mx-auto mt-12 mb-16">
+      <div className="mb-16">
         <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="flex flex-col md:flex-row md:items-end justify-between gap-6"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex flex-col lg:flex-row lg:items-end justify-between gap-8"
         >
           <div>
-            <h1 className="font-heading text-6xl md:text-8xl text-white tracking-tighter leading-none uppercase">
-              COMMAND <span className="text-fc-gold">CENTER</span>
+            <span className="text-[10px] font-bold tracking-[3px] uppercase text-g mb-3 block">Personal Sanctuary</span>
+            <h1 className="font-heading text-5xl md:text-6xl font-bold text-white mb-4">
+              {getGreeting()}, <span className="text-g italic">{user?.username || 'Guest'}</span>
             </h1>
-            <p className="font-body text-fc-gold/60 text-lg tracking-[0.3em] uppercase mt-2">
-              Welcome back, {user?.username || 'Soldier'}. You are alive.
+            <p className="text-[#8892B0] text-sm md:text-[15px] leading-relaxed max-w-[500px]">
+              The night is a place for healing, not just waiting. Here is your progress and path forward.
             </p>
           </div>
           
-          <div className="flex gap-4">
-             <div className="bg-black/40 border border-white/10 px-6 py-3 rounded-sm flex items-center gap-3">
-                <Shield size={20} className="text-fc-gold" />
+          <div className="flex flex-wrap gap-4">
+            {stats.map((s, i) => (
+              <div key={i} className="glass py-3 px-6 rounded-2xl border-white/5 flex items-center gap-4">
+                <s.icon size={18} className={s.color} />
                 <div className="text-left">
-                   <p className="text-[10px] text-white/40 uppercase tracking-widest font-bold">Status</p>
-                   <p className="text-sm text-white font-heading">OPERATIONAL</p>
+                  <p className="text-[9px] text-[#4A5370] uppercase font-bold tracking-wider">{s.label}</p>
+                  <p className="text-sm text-white font-bold">{s.value}</p>
                 </div>
-             </div>
-             <div className="bg-black/40 border border-white/10 px-6 py-3 rounded-sm flex items-center gap-3">
-                <Heart size={20} className="text-fc-red" />
-                <div className="text-left">
-                   <p className="text-[10px] text-white/40 uppercase tracking-widest font-bold">System</p>
-                   <p className="text-sm text-white font-heading">STABLE</p>
-                </div>
-             </div>
+              </div>
+            ))}
           </div>
         </motion.div>
       </div>
 
       {/* Main Grid */}
-      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
         {modules.map((module, i) => (
           <motion.div
             key={module.title}
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
-            className={`group relative overflow-hidden bg-[#1C1C1C]/40 backdrop-blur-3xl border ${module.color} p-8 rounded-xl transition-all hover:scale-[1.02] hover:bg-[#1C1C1C]/60`}
+            className={`group glass-card p-8 flex flex-col transition-all hover:-translate-y-1 ${module.highlight ? 'border-g/30' : ''}`}
           >
-            {/* Background Glow for highlight */}
-            {module.highlight && (
-              <div className="absolute top-0 right-0 w-32 h-32 bg-fc-gold/5 blur-3xl -mr-16 -mt-16 pointer-events-none" />
-            )}
-
-            <div className="flex justify-between items-start mb-6">
-              <div className={`p-4 rounded-lg bg-black/40 border ${module.highlight ? 'border-fc-gold/30 text-fc-gold' : 'border-white/5 text-white/40'}`}>
+            <div className="flex justify-between items-start mb-8">
+              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all ${
+                module.highlight ? 'bg-g text-black shadow-[0_0_20px_rgba(201,168,76,0.2)]' : 'bg-white/5 text-g'
+              }`}>
                 {module.icon}
               </div>
-              <span className="font-heading text-xs text-fc-gold tracking-widest uppercase opacity-40 group-hover:opacity-100 transition-opacity">
+              <span className="text-[10px] font-bold text-g/60 tracking-[2px] uppercase opacity-0 group-hover:opacity-100 transition-opacity">
                 {module.tagline}
               </span>
             </div>
 
-            <h2 className="font-heading text-4xl text-white mb-3 tracking-wider group-hover:text-fc-gold transition-colors">
+            <h2 className="font-heading text-3xl font-bold text-white mb-3 tracking-wide group-hover:text-g transition-colors">
               {module.title}
             </h2>
             
-            <p className="font-body text-white/50 text-[15px] leading-relaxed mb-8 max-w-[80%]">
+            <p className="font-body text-[#8892B0] text-[14px] leading-relaxed mb-10 max-w-[320px]">
               {module.desc}
             </p>
 
             <Link 
               to={module.path}
-              className={`inline-flex items-center gap-3 font-heading tracking-[0.2em] text-[13px] py-3 px-6 rounded-sm transition-all ${
-                module.highlight 
-                ? 'bg-fc-gold text-black hover:brightness-110' 
-                : 'border border-white/10 text-white/60 hover:border-fc-gold hover:text-fc-gold'
+              className={`mt-auto inline-flex items-center gap-3 text-[12px] font-bold uppercase tracking-[2px] transition-all ${
+                module.highlight ? 'text-white' : 'text-g/80 hover:text-white'
               }`}
             >
-              {module.btnText} <ArrowRight size={16} />
+              Learn More <ArrowRight size={16} className="group-hover:translate-x-1.5 transition-transform" />
             </Link>
-
-            {/* Corner Decor */}
-            <div className="absolute bottom-0 right-0 w-8 h-8 opacity-10 pointer-events-none">
-               <div className="absolute bottom-4 right-4 w-4 h-[1px] bg-white" />
-               <div className="absolute bottom-4 right-4 w-[1px] h-4 bg-white" />
-            </div>
           </motion.div>
         ))}
       </div>
 
-      {/* Motivational Footer */}
-      <div className="max-w-6xl mx-auto mt-20 text-center">
-         <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent mb-12" />
-         <p className="font-body text-white/20 italic text-lg">
-           "First you have to give up. First you have to know, not fear, that someday you're going to die."
-         </p>
-         <div className="mt-8 flex justify-center gap-12 text-[10px] font-heading tracking-[0.5em] text-white/10 uppercase">
-            <span>Rule #1</span>
-            <span>Rule #2</span>
-            <span>Rule #3</span>
+      {/* Encouragement Footer */}
+      <div className="mt-24 text-center">
+         <div className="max-w-[600px] mx-auto">
+            <div className="w-12 h-px bg-g/20 mx-auto mb-10" />
+            <p className="font-heading text-2xl text-white italic mb-4">
+              "Healing is not a destination, but a way of walking through the night."
+            </p>
+            <p className="text-[10px] text-[#4A5370] uppercase tracking-[4px]">You are safe here • Sleep · Breathe · Heal</p>
          </div>
       </div>
     </div>

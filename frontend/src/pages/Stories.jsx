@@ -1,125 +1,104 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, MessageSquare, Plus, ArrowRight, Moon } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import api from '../api';
+import { toast } from 'react-hot-toast';
+import { Heart, MessageCircle, Plus, ArrowRight, Moon, Sparkles, Send, Shield, Info } from 'lucide-react';
+import PostCard from '../components/dashboard/PostCard';
+import PostComposer from '../components/dashboard/PostComposer';
+import { useSelector } from 'react-redux';
 
 const Stories = () => {
+  const { user } = useSelector(state => state.auth || { user: null });
   const [stories, setStories] = useState([]);
   const [loading, setLoading] = useState(true);
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+  const [showComposer, setShowComposer] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchStories = async () => {
       try {
-        const res = await axios.get(`${API_URL}/stories`);
+        const res = await api.get('/stories');
         setStories(res.data);
-      } catch (err) { 
-        console.error(err); 
+      } catch (err) {
+        toast.error("The collective memory is temporarily obscured.");
       } finally {
         setLoading(false);
       }
     };
     fetchStories();
-  }, [API_URL]);
+  }, []);
 
   return (
-    <div className="min-h-screen relative z-10 pt-[72px]">
-      {/* HERO SECTION */}
-      <section className="relative h-[50vh] flex items-center overflow-hidden border-b border-white/10">
-        <div className="absolute inset-0">
-          <img 
-            src="/photos/photo3.jpg" 
-            className="w-full h-full object-cover filter contrast-[1.2] saturate-[0.1] brightness-[0.3]" 
-            alt="Stories Hero" 
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
-        </div>
-        
-        <div className="max-w-[1200px] mx-auto px-6 md:px-12 relative z-10 w-full">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            <h1 className="font-heading text-6xl md:text-9xl text-white tracking-widest leading-none">THE CIRCLE</h1>
-            <p className="font-body text-fc-gold text-lg tracking-[0.4em] uppercase mt-4">
-              "Your stories are not yours. They belong to everyone."
-            </p>
-          </motion.div>
-        </div>
-      </section>
+    <div className="max-w-[840px] mx-auto px-6 py-12">
+      {/* HEADER */}
+      <header className="mb-16 text-center">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="inline-flex items-center gap-2 bg-g/5 border border-g/10 rounded-full px-4 py-1.5 text-[10px] font-bold tracking-[3px] uppercase text-g mb-6"
+        >
+          <Sparkles size={14} /> Shared Truths
+        </motion.div>
+        <h1 className="font-heading text-5xl md:text-7xl font-bold text-white mb-6 italic">
+          Collective <span className="text-g">Voices</span>
+        </h1>
+        <p className="font-body text-[#8892B0] text-sm md:text-base leading-relaxed max-w-[500px] mx-auto">
+          "Your stories are not yours alone. In sharing, we heal together." 
+          Browse the reflections of fellow night-dwellers.
+        </p>
+      </header>
 
-      {/* ACTION BAR */}
-      <div className="sticky top-[72px] z-20 bg-black/80 backdrop-blur-xl border-b border-white/10 py-6">
-        <div className="max-w-[1200px] mx-auto px-6 md:px-12 flex justify-between items-center">
-          <div className="flex gap-8">
-            <button className="font-heading text-[13px] text-fc-gold tracking-widest border-b border-fc-gold pb-1 uppercase">LATEST TRUTH</button>
-            <button className="font-heading text-[13px] text-white/40 tracking-widest hover:text-white transition-colors uppercase">MOST FELT</button>
-          </div>
-          <Link to="/post-story" className="button-fight text-[13px] flex items-center gap-2">
-            <Plus size={16} /> RELEASE A STORY
-          </Link>
-        </div>
+      {/* COMPOSER TRIGGER */}
+      <div className="mb-12">
+         {showComposer ? (
+           <PostComposer />
+         ) : (
+           <button 
+             onClick={() => setShowComposer(true)}
+             className="w-full py-6 glass border-dashed border-white/10 text-[#4A5370] hover:text-g hover:border-g/30 transition-all flex flex-col items-center justify-center gap-2 group"
+           >
+              <Plus size={24} className="group-hover:scale-110 transition-transform" />
+              <span className="text-[11px] font-bold uppercase tracking-[4px]">Release a new reflection</span>
+           </button>
+         )}
       </div>
 
-      {/* STORIES GRID */}
-      <section className="py-[80px] max-w-[1200px] mx-auto px-6 md:px-12">
+      {/* FEED Section */}
+      <section>
         {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[1, 2, 3, 4, 5, 6].map(i => (
-              <div key={i} className="h-[400px] bg-white/5 animate-pulse rounded-xl" />
-            ))}
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <AnimatePresence>
-              {stories.map((story, i) => (
-                <motion.div
-                  key={story._id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.05 }}
-                  className="card-brutal flex flex-col group hover:border-fc-gold/20 transition-all border-white/5"
-                >
-                  <div className="flex justify-between items-start mb-6">
-                    <span className="font-body text-[10px] text-fc-gold tracking-widest uppercase px-3 py-1 bg-fc-gold/10 rounded-full">
-                      {story.mood || 'STORY'}
-                    </span>
-                    <span className="font-body text-[10px] text-white/30 tracking-widest uppercase">
-                      {story.isAnonymous ? 'ANONYMOUS' : story.author?.username}
-                    </span>
-                  </div>
-
-                  <h3 className="font-heading text-3xl text-white mb-4 line-clamp-2 uppercase group-hover:text-fc-gold transition-colors tracking-tight">
-                    {story.title}
-                  </h3>
-
-                  <p className="font-body text-[15px] text-white/60 leading-relaxed mb-8 flex-grow line-clamp-4">
-                    {story.content}
-                  </p>
-
-                  <div className="flex items-center justify-between border-t border-white/5 pt-6">
-                    <button className="flex items-center gap-2 font-heading text-lg text-white/40 hover:text-fc-red transition-colors">
-                      <Heart size={18} className="text-fc-red/40" /> {story.beenThereCount || 0}
-                    </button>
-                    <Link to={`/stories/${story._id}`} className="flex items-center gap-2 font-heading text-lg text-fc-gold/60 hover:text-fc-gold transition-colors">
-                      READ <ArrowRight size={16} />
-                    </Link>
-                  </div>
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </div>
-        )}
+             <div className="space-y-8">
+                {[1, 2, 3].map(i => (
+                  <div key={i} className="h-[280px] glass animate-pulse rounded-3xl" />
+                ))}
+             </div>
+          ) : (
+            <div className="space-y-2">
+              <AnimatePresence>
+                {stories.map((story) => (
+                   <PostCard key={story._id} post={story} currentUser={user} />
+                ))}
+              </AnimatePresence>
+            </div>
+          )}
 
         {!loading && stories.length === 0 && (
-          <div className="text-center py-40 border border-dashed border-white/10 rounded-xl">
-             <Moon className="mx-auto text-white/10 mb-6" size={60} />
-             <h2 className="font-heading text-4xl text-white/40 mb-4 uppercase">The circle is quiet.</h2>
-             <p className="font-body text-white/20 uppercase tracking-[0.2em]">Silence is also a copy.</p>
+          <div className="text-center py-32 glass border-dashed border-white/5 opacity-50">
+             <div className="w-16 h-16 rounded-full border border-current flex items-center justify-center mx-auto mb-6 text-g/30">
+                <Moon size={32} />
+             </div>
+             <p className="font-heading text-xl font-bold uppercase tracking-widest text-[#4A5370]">The collective is quiet tonight</p>
           </div>
         )}
       </section>
+
+      {/* FOOTER NOTE */}
+      <div className="mt-20 flex items-center gap-4 p-6 glass border-g/10 bg-g/5 rounded-2xl">
+         <Info size={20} className="text-g shrink-0" />
+         <p className="text-[12px] text-[#8892B0] leading-relaxed">
+           Reflections are shared with the global community. Always remember to use **Trigger Warnings** for sensitive topics to protect fellow members.
+         </p>
+      </div>
     </div>
   );
 };

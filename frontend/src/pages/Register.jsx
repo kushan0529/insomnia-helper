@@ -1,13 +1,11 @@
-
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, Moon, Sparkles, Brain, CheckCircle2, ArrowRight, MapPin, User, Mail, Shield } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 import api from '../api';
 import { toast } from 'react-hot-toast';
 import { registerUser } from '../redux/slices/authSlice';
-import styles from './Register.module.css';
 
 const Register = () => {
   const [phase, setPhase] = useState(1);
@@ -17,14 +15,12 @@ const Register = () => {
   
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { error: authError } = useSelector(state => state.auth);
+  const { error: authError } = useSelector(state => state.auth || { error: null });
 
-  // Phase 1 Assessment State
   const [answers, setAnswers] = useState({
     q1: '', q2: '', q3: '', q4: 5, q5: ''
   });
 
-  // Phase 3 Form State
   const [formData, setFormData] = useState({
     username: '', 
     email: '', 
@@ -34,7 +30,6 @@ const Register = () => {
     isAnonymous: true
   });
 
-  // Watch for authError and show toast
   useEffect(() => {
     if (authError) {
       toast.error(authError);
@@ -43,7 +38,7 @@ const Register = () => {
 
   const handleAssessmentSubmit = async () => {
     if (!answers.q1 || !answers.q2 || !answers.q3 || !answers.q5) {
-      toast.error("Don't leave the night empty.");
+      toast.error("Please answer all questions so we can help you best.");
       return;
     }
     
@@ -56,7 +51,6 @@ const Register = () => {
         setPhase(2);
       }, 1500);
     } catch (err) {
-      console.error('Assessment Error:', err);
       setTimeout(() => {
         setIsDepressed(false);
         setLoading(false);
@@ -68,7 +62,7 @@ const Register = () => {
   const handleFinalSubmit = async (e) => {
     e.preventDefault();
     if (!formData.username || !formData.email || !formData.password) {
-      toast.error("Identity and secret are required.");
+      toast.error("Please provide your name, email, and a secure password.");
       return;
     }
     
@@ -77,13 +71,11 @@ const Register = () => {
       username: formData.username.trim(), 
       email: formData.email.trim().toLowerCase(), 
       password: formData.password, 
-      city: formData.city.trim() || "Unknown", 
+      city: formData.city.trim() || "Earth", 
       sleepIssueCategory: formData.sleepIssueCategory, 
       isAnonymous: formData.isAnonymous,
       isDepressed: Boolean(isDepressed)
     };
-    
-    console.log('[DEBUG] Registering with:', finalData);
     
     const result = await dispatch(registerUser(finalData));
     
@@ -92,106 +84,102 @@ const Register = () => {
       setTimeout(() => navigate('/dashboard'), 3000);
     } else {
       setLoading(false);
-      console.error('[DEBUG] Registration Failed:', result.payload);
       if (result.payload?.message) {
         toast.error(result.payload.message);
       } else {
-        toast.error("The underground denied your entry. Try again.");
+        toast.error("Registration failed. Please try again.");
       }
     }
   };
 
   return (
-    <div className={styles.registerPage}>
-      {/* Cinematic Background Layer */}
-      <div className={styles.bgWrapper}>
-        <div className={styles.bgImage} />
-        <div className={styles.darkOverlay} />
-        <div className={styles.redHighlight} />
-        <div className={styles.grittyTexture} />
-        <div className={styles.vignette} />
-        <div className={styles.scanline} />
-      </div>
-
-      {/* Foreground Content */}
-      <div className={styles.formContainer}>
+    <div className="min-h-[calc(100vh-62px)] flex items-center justify-center px-6 py-12">
+      <div className="max-w-[500px] w-full relative">
         <AnimatePresence mode="wait">
           {phase === 1 && (
             <motion.div
               key="phase1"
-              initial={{ opacity: 0, scale: 0.95 }}
+              initial={{ opacity: 0, scale: 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 1.05 }}
-              transition={{ duration: 0.4 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="glass p-8 md:p-10 border-g/10 shadow-[0_32px_128px_rgba(0,0,0,0.6)]"
             >
-              <h1 className={`${styles.bebas} ${styles.title}`}>PRE-ENTRY</h1>
-              <p className={styles.subtitle}>EVALUATING YOUR MENTAL FRAGMENTATION</p>
+              <div className="flex flex-col items-center text-center mb-10">
+                <div className="w-14 h-14 rounded-full bg-g/5 border border-g/10 flex items-center justify-center mb-6">
+                  <Sparkles className="text-g" size={24} />
+                </div>
+                <h1 className="font-heading text-3xl font-bold text-white mb-2">Self‑Check</h1>
+                <p className="font-body text-[13px] text-[#8892B0] uppercase tracking-[3px]">Evaluating your state</p>
+              </div>
               
-              <div className="space-y-6">
-                <div className={styles.inputGroup}>
-                  <label className={styles.label}>HOW OFTEN DO YOU FEEL HOPELESS?</label>
-                  <div className="grid grid-cols-3 gap-2 mt-2">
-                    {['NEVER', 'SOMETIMES', 'ALWAYS'].map(opt => (
+              <div className="space-y-8">
+                <div className="space-y-3">
+                  <label className="text-[10px] font-bold text-g/60 tracking-[2px] uppercase">How often do you feel hopeless?</label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {['Never', 'Sometimes', 'Always'].map(opt => (
                       <button 
                         key={opt} type="button"
                         onClick={() => setAnswers({...answers, q1: opt})}
-                        className={`${styles.input} ${answers.q1 === opt ? 'border-[#8b0000] bg-[#8b0000]/20' : ''}`}
-                        style={{ padding: '10px', fontSize: '10px' }}
+                        className={`py-3 rounded-xl text-[11px] font-bold transition-all border ${
+                          answers.q1 === opt ? 'bg-g/10 border-g text-g' : 'bg-s1/30 border-white/5 text-[#8892B0] hover:text-white'
+                        }`}
                       >{opt}</button>
                     ))}
                   </div>
                 </div>
 
-                <div className={styles.inputGroup}>
-                  <label className={styles.label}>HOURS SLEPT LAST NIGHT?</label>
-                  <div className="grid grid-cols-4 gap-2 mt-2">
+                <div className="space-y-3">
+                  <label className="text-[10px] font-bold text-g/60 tracking-[2px] uppercase">Hours slept last night?</label>
+                  <div className="grid grid-cols-4 gap-2">
                     {['0-2', '3-5', '6-8', '8+'].map(opt => (
                       <button 
                         key={opt} type="button"
                         onClick={() => setAnswers({...answers, q2: opt})}
-                        className={`${styles.input} ${answers.q2 === opt ? 'border-[#8b0000] bg-[#8b0000]/20' : ''}`}
-                        style={{ padding: '10px', fontSize: '9px' }}
+                        className={`py-3 rounded-xl text-[11px] font-bold transition-all border ${
+                          answers.q2 === opt ? 'bg-g/10 border-g text-g' : 'bg-s1/30 border-white/5 text-[#8892B0] hover:text-white'
+                        }`}
                       >{opt}</button>
                     ))}
                   </div>
                 </div>
 
-                <div className={styles.inputGroup}>
-                  <label className={styles.label}>ARE YOU DISCONNECTED?</label>
-                  <div className="grid grid-cols-3 gap-2 mt-2">
-                    {['YES', 'NO', 'PARTLY'].map(opt => (
+                <div className="space-y-3">
+                  <label className="text-[10px] font-bold text-g/60 tracking-[2px] uppercase">Are you feeling disconnected?</label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {['Yes', 'No', 'Partly'].map(opt => (
                       <button 
                         key={opt} type="button"
                         onClick={() => setAnswers({...answers, q3: opt})}
-                        className={`${styles.input} ${answers.q3 === opt ? 'border-[#8b0000] bg-[#8b0000]/20' : ''}`}
-                        style={{ padding: '10px', fontSize: '10px' }}
+                        className={`py-3 rounded-xl text-[11px] font-bold transition-all border ${
+                          answers.q3 === opt ? 'bg-g/10 border-g text-g' : 'bg-s1/30 border-white/5 text-[#8892B0] hover:text-white'
+                        }`}
                       >{opt}</button>
                     ))}
                   </div>
                 </div>
 
-                <div className={styles.inputGroup}>
-                  <label className={styles.label}>INTRUSIVE THOUGHTS?</label>
-                  <div className="grid grid-cols-2 gap-4 mt-2">
-                    <button 
-                      type="button"
-                      onClick={() => setAnswers({...answers, q5: 'YES'})}
-                      className={`${styles.input} ${answers.q5 === 'YES' ? 'border-[#8b0000] bg-[#8b0000]/20' : ''}`}
-                    >YES</button>
-                    <button 
-                      type="button"
-                      onClick={() => setAnswers({...answers, q5: 'NO'})}
-                      className={`${styles.input} ${answers.q5 === 'NO' ? 'border-[#8b0000] bg-[#8b0000]/20' : ''}`}
-                    >NO</button>
+                <div className="space-y-3">
+                  <label className="text-[10px] font-bold text-g/60 tracking-[2px] uppercase">Any intrusive thoughts?</label>
+                  <div className="grid grid-cols-2 gap-3">
+                    {['Yes', 'No'].map(opt => (
+                      <button 
+                        key={opt} type="button"
+                        onClick={() => setAnswers({...answers, q5: opt.toUpperCase()})}
+                        className={`py-3 rounded-xl text-[11px] font-bold transition-all border ${
+                          answers.q5 === opt.toUpperCase() ? 'bg-g/10 border-g text-g' : 'bg-s1/30 border-white/5 text-[#8892B0] hover:text-white'
+                        }`}
+                      >{opt}</button>
+                    ))}
                   </div>
                 </div>
 
                 <button 
                   onClick={handleAssessmentSubmit}
                   disabled={loading}
-                  className={`${styles.bebas} ${styles.submitBtn}`}
+                  className="btn-gold w-full flex items-center justify-center gap-2 mt-4"
                 >
-                  {loading ? "ANALYZING DESPAIR..." : "ANALYZE STATE"}
+                  {loading ? "Analyzing state..." : "Analyze State"}
+                  {!loading && <ArrowRight size={16} />}
                 </button>
               </div>
             </motion.div>
@@ -200,23 +188,27 @@ const Register = () => {
           {phase === 2 && (
             <motion.div
               key="phase2"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              className="text-center"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="glass p-10 text-center border-g/10"
             >
-              <h1 className={`${styles.bebas} ${styles.title}`} style={{ border: 'none', padding: 0 }}>
-                CALIBRATION COMPLETE
-              </h1>
-              <p className={styles.subtitle} style={{ padding: 0 }}>
-                {isDepressed ? "SENSING EXTREME FRAGMENTATION." : "STABLE BUT VULNERABLE."}
+              <div className="w-20 h-20 rounded-full bg-g/5 border border-g/10 flex items-center justify-center mx-auto mb-8">
+                <Brain className="text-g animate-pulse" size={36} />
+              </div>
+              <h1 className="font-heading text-3xl font-bold text-white mb-3"> Analysis Complete </h1>
+              <p className="font-body text-[14px] text-[#8892B0] leading-relaxed mb-10">
+                {isDepressed ? 
+                  "Our system senses some heavy fragmentation. We are here to support you." : 
+                  "You seem stable but vulnerable. You've come to the right place."}
               </p>
-              <div className="w-full h-px bg-white/10 my-8" />
+              
               <button 
                 onClick={() => setPhase(3)}
-                className={`${styles.bebas} ${styles.submitBtn}`}
+                className="btn-gold w-full flex items-center justify-center gap-2"
               >
-                {isDepressed ? "ACCEPT THE TRUTH & ENTER" : "CONTINUE TO RECRUITMENT"}
+                {isDepressed ? "Accept & Enter" : "Continue to Circle"}
+                <ArrowRight size={16} />
               </button>
             </motion.div>
           )}
@@ -226,41 +218,51 @@ const Register = () => {
               key="phase3"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
+              className="glass p-8 md:p-10 border-g/10"
             >
-              <h1 className={`${styles.bebas} ${styles.title}`}>RECRUITMENT</h1>
-              <p className={styles.subtitle}>IDENTITY IS OPTIONAL. TRUTH IS NOT.</p>
+              <div className="text-center mb-8">
+                <h1 className="font-heading text-3xl font-bold text-white mb-2">Create Profile</h1>
+                <p className="font-body text-[13px] text-[#8892B0] uppercase tracking-[3px]">Identity is your choice</p>
+              </div>
 
-              <form onSubmit={handleFinalSubmit}>
-                <div className={styles.inputGroup}>
-                  <label className={styles.label}>ALIAS</label>
-                  <input 
-                    name="username"
-                    className={styles.input} 
-                    placeholder="WHAT DO THEY CALL YOU?"
-                    value={formData.username}
-                    onChange={(e) => setFormData({...formData, username: e.target.value})}
-                  />
-                </div>
-
-                <div className={styles.inputGroup}>
-                  <label className={styles.label}>SIGNAL (EMAIL)</label>
-                  <input 
-                    type="email"
-                    name="email"
-                    className={styles.input} 
-                    placeholder="EXTERNAL CONTACT POINT"
-                    value={formData.email}
-                    onChange={(e) => setFormData({...formData, email: e.target.value})}
-                  />
-                </div>
-
-                <div className={styles.inputGroup}>
-                  <label className={styles.label}>KEY (PASSWORD)</label>
+              <form onSubmit={handleFinalSubmit} className="space-y-5">
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-g/60 tracking-[2px] uppercase ml-1">Preferred Alias</label>
                   <div className="relative">
+                    <User className="absolute left-4 top-1/2 -translate-y-1/2 text-[#4A5370]" size={16} />
+                    <input 
+                      name="username"
+                      className="w-full bg-s1/30 border border-white/5 p-3.5 pl-12 font-body text-[14px] text-white outline-none focus:border-g/30 transition-all rounded-xl"
+                      placeholder="What should we call you?"
+                      value={formData.username}
+                      onChange={(e) => setFormData({...formData, username: e.target.value})}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-g/60 tracking-[2px] uppercase ml-1">Security Email</label>
+                  <div className="relative">
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-[#4A5370]" size={16} />
+                    <input 
+                      type="email"
+                      name="email"
+                      className="w-full bg-s1/30 border border-white/5 p-3.5 pl-12 font-body text-[14px] text-white outline-none focus:border-g/30 transition-all rounded-xl"
+                      placeholder="External signal point"
+                      value={formData.email}
+                      onChange={(e) => setFormData({...formData, email: e.target.value})}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-g/60 tracking-[2px] uppercase ml-1">Security Key</label>
+                  <div className="relative">
+                    <Shield className="absolute left-4 top-1/2 -translate-y-1/2 text-[#4A5370]" size={16} />
                     <input 
                       type={showPassword ? "text" : "password"}
                       name="password"
-                      className={`${styles.input} pr-12`} 
+                      className="w-full bg-s1/30 border border-white/5 p-3.5 pl-12 pr-12 font-body text-[14px] text-white outline-none focus:border-g/30 transition-all rounded-xl"
                       placeholder="••••••••"
                       value={formData.password}
                       onChange={(e) => setFormData({...formData, password: e.target.value})}
@@ -268,33 +270,36 @@ const Register = () => {
                     <button 
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 text-white/20 hover:text-fc-red transition-colors"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-[#4A5370] hover:text-g transition-colors"
                     >
                       {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                     </button>
                   </div>
                 </div>
 
-                <div className={styles.inputGroup}>
-                  <label className={styles.label}>CITY / LOCATION</label>
-                  <input 
-                    name="city"
-                    className={styles.input} 
-                    placeholder="WHERE DO YOU LIE AWAKE?"
-                    value={formData.city}
-                    onChange={(e) => setFormData({...formData, city: e.target.value})}
-                  />
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-g/60 tracking-[2px] uppercase ml-1">City / Location</label>
+                  <div className="relative">
+                    <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-[#4A5370]" size={16} />
+                    <input 
+                      name="city"
+                      className="w-full bg-s1/30 border border-white/5 p-3.5 pl-12 font-body text-[14px] text-white outline-none focus:border-g/30 transition-all rounded-xl"
+                      placeholder="Where are you tonight?"
+                      value={formData.city}
+                      onChange={(e) => setFormData({...formData, city: e.target.value})}
+                    />
+                  </div>
                 </div>
 
-                <div className="flex items-center justify-between mb-8 bg-white/5 p-4 border border-white/10 cursor-pointer"
+                <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/10 cursor-pointer mt-2"
                      onClick={() => setFormData({...formData, isAnonymous: !formData.isAnonymous})}>
                    <div>
-                      <div className={styles.bebas} style={{ fontSize: '14px', color: formData.isAnonymous ? '#8b0000' : '#aaa' }}>
-                        {formData.isAnonymous ? "ANONYMOUS RECRUIT" : "KNOWN OPERATIVE"}
+                      <div className={`text-[11px] font-bold tracking-wider uppercase ${formData.isAnonymous ? 'text-g' : 'text-[#8892B0]'}`}>
+                        {formData.isAnonymous ? "Anonymous Member" : "Known Profile"}
                       </div>
-                      <p className="text-[9px] opacity-40 uppercase">Toggle Privacy Status</p>
+                      <p className="text-[9px] text-[#4A5370] uppercase">Toggle Privacy</p>
                    </div>
-                   <div className={`w-10 h-5 flex items-center p-1 rounded-full ${formData.isAnonymous ? 'bg-[#8b0000]' : 'bg-gray-800'}`}>
+                   <div className={`w-10 h-5 flex items-center p-1 rounded-full transition-colors ${formData.isAnonymous ? 'bg-g' : 'bg-gray-800'}`}>
                       <div className={`w-3 h-3 bg-white rounded-full transition-all ${formData.isAnonymous ? 'ml-auto' : 'mr-auto'}`} />
                    </div>
                 </div>
@@ -302,14 +307,14 @@ const Register = () => {
                 <button 
                   type="submit"
                   disabled={loading}
-                  className={`${styles.bebas} ${styles.submitBtn}`}
+                  className="btn-gold w-full flex items-center justify-center gap-2 mt-4"
                 >
-                  {loading ? "RECORDING..." : "ENTER THE CIRCLE"}
+                  {loading ? "Recording..." : "Join the Circle"}
+                  {!loading && <CheckCircle2 size={16} />}
                 </button>
 
-                <p className={styles.footerText}>
-                  ALREADY A RECRUIT? 
-                  <Link to="/login" className={styles.link}>SIGN IN</Link>
+                <p className="text-center text-[12px] text-[#4A5370] uppercase tracking-widest mt-6">
+                  Already a recruit? <Link to="/login" className="text-g hover:text-white transition-colors underline underline-offset-4 decoration-g/30">Sign In</Link>
                 </p>
               </form>
             </motion.div>
@@ -318,17 +323,21 @@ const Register = () => {
           {phase === 4 && (
             <motion.div
               key="phase4"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="text-center"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="glass p-12 text-center border-g/10 shadow-[0_0_80px_rgba(201,168,76,0.1)]"
             >
-              <h1 className={`${styles.bebas} ${styles.title}`} style={{ border: 'none', padding: 0, color: '#8b0000' }}>
-                ACCESS GRANTED
-              </h1>
-              <p className={styles.subtitle} style={{ padding: 0 }}>WELCOME TO THE UNDERGROUND.</p>
-              <div className="mt-8 flex justify-center">
-                 <div className="w-12 h-12 border-4 border-fc-red border-t-transparent rounded-full animate-spin" />
+              <div className="w-24 h-24 rounded-full border-2 border-g/30 flex items-center justify-center mx-auto mb-8 relative">
+                <CheckCircle2 className="text-g" size={48} />
+                <motion.div 
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1.5, opacity: 0 }}
+                  transition={{ duration: 1, repeat: Infinity }}
+                  className="absolute inset-0 rounded-full bg-g"
+                />
               </div>
+              <h1 className="font-heading text-3xl font-bold text-white mb-2">Access Granted</h1>
+              <p className="font-body text-[14px] text-[#8892B0] uppercase tracking-[4px]">Welcome to the Circle</p>
             </motion.div>
           )}
         </AnimatePresence>

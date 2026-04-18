@@ -1,144 +1,201 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import { ArrowRight, Moon, Shield, Zap, Users } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate, Link } from 'react-router-dom';
+import { ArrowRight, Sparkles, MessageCircle, Heart, Moon, Users, Shield } from 'lucide-react';
+import api from '../api';
 
 const Home = () => {
-  return (
-    <div className="min-h-screen relative z-10 pt-[72px]">
-      {/* HERO SECTION */}
-      <section className="relative w-full h-[85vh] flex items-center overflow-hidden border-b border-white/10">
-        <div className="absolute inset-0 z-0">
-          <img 
-            src="/photos/photo1.jpg" 
-            className="w-full h-full object-cover filter contrast-[1.2] saturate-[0.4] brightness-[0.4]" 
-            alt="Hero Background" 
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-black via-black/40 to-transparent" />
-        </div>
+  const navigate = useNavigate();
+  const [recentStories, setRecentStories] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-        <div className="max-w-[1200px] mx-auto px-6 md:px-12 relative z-10 w-full">
-          <motion.div
-            initial={{ x: -50, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ duration: 0.8 }}
-            className="max-w-2xl"
+  useEffect(() => {
+    const fetchRecent = async () => {
+      try {
+        const res = await api.get('/stories');
+        // Get only the first 3
+        setRecentStories(res.data.slice(0, 3));
+      } catch (err) {
+        console.error("Home feed fetch error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchRecent();
+  }, []);
+
+  const navTo = (pg) => navigate('/' + pg);
+
+  const toolkit = [
+    { ic: '💭', tit: 'Mood Check', path: 'mood' },
+    { ic: '🧠', tit: 'CBT Program', path: 'programs' },
+    { ic: '👥', tit: 'Circles', path: 'rooms' },
+    { ic: '📓', tit: 'Journal', path: 'journal' },
+    { ic: '🏛️', tit: 'The Collective', path: 'stories' },
+    { ic: '👤', tit: 'Profile', path: 'profile' }
+  ];
+
+  return (
+    <div className="flex flex-col">
+      {/* HERO SECTION */}
+      <section className="min-h-[95vh] flex items-center justify-center text-center p-6 md:p-12 relative overflow-hidden">
+        {/* Background glow */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(circle_at_center,rgba(201,168,76,0.08)_0,transparent_70%)] pointer-events-none" />
+        
+        <div className="max-w-[840px] relative z-10">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="inline-flex items-center gap-2 bg-g/10 border border-g/20 rounded-full px-5 py-2 text-[10px] font-semibold tracking-[3px] uppercase text-g mb-12 shadow-[0_0_20px_rgba(201,168,76,0.1)]"
           >
-            <h1 className="font-heading text-7xl md:text-[120px] leading-[0.9] text-white tracking-tighter mb-6">
-              THE NIGHT <br/> IS YOURS.
-            </h1>
-            <p className="font-body text-lg md:text-xl text-fc-gold tracking-widest uppercase mb-8 border-l-2 border-fc-gold pl-6">
-              "Everything is a copy of a copy of a copy." <br/>
-              Support for those who don't sleep.
-            </p>
-            <div className="flex flex-wrap gap-6">
-              <Link to="/register" className="button-fight">
-                JOIN THE CIRCLE
-              </Link>
-              <Link to="/stories" className="flex items-center gap-2 font-body text-white/60 hover:text-white transition-colors uppercase tracking-[.2em] text-sm">
-                BEYOND THE VOID <ArrowRight size={16} />
-              </Link>
-            </div>
+            <span className="w-1.5 h-1.5 rounded-full bg-g animate-pulse" />
+            The Sanctuary is Open
+          </motion.div>
+          
+          <motion.h1 
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1, duration: 0.8 }}
+            className="font-heading text-6xl md:text-[116px] font-bold leading-[0.85] tracking-tighter mb-10 text-white"
+          >
+            Rest is <br /><span className="text-g italic drop-shadow-[0_0_30px_rgba(201,168,76,0.2)]">Rebellion.</span>
+          </motion.h1>
+          
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-lg md:text-[20px] text-[#8892B0] leading-relaxed max-w-[560px] mx-auto mb-14 font-body italic opacity-80"
+          >
+            "In a world that never sleeps, choosing to rest is the ultimate act of defiance." Reclaim your peace through science and shared truth.
+          </motion.p>
+          
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.3 }}
+            className="flex flex-wrap gap-5 justify-center"
+          >
+            <button onClick={() => navTo('rooms')} className="btn-gold !px-12 !py-5 flex items-center gap-3 shadow-[0_20px_40px_rgba(201,168,76,0.2)] group">
+              Enter the Sanctuary <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+            </button>
+            <button onClick={() => navTo('stories')} className="btn-outline !px-12 !py-5">
+              Collective Voices
+            </button>
           </motion.div>
         </div>
       </section>
 
-      {/* IMPACT STATS BANNER */}
-      <section className="bg-black/90 border-b border-fc-red/30 py-20 relative overflow-hidden">
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-fc-red/50 to-transparent" />
-        <div className="max-w-[1200px] mx-auto px-6 md:px-12 grid grid-cols-1 md:grid-cols-3 gap-16 relative z-10">
-           <div className="border-l-2 border-fc-red/20 pl-8">
-              <p className="font-body text-fc-red text-xs uppercase tracking-[0.4em] mb-4">The Yearly Toll</p>
-              <h2 className="font-heading text-6xl md:text-7xl text-white tracking-tighter leading-none mb-4">700,000+</h2>
-              <p className="font-body text-[10px] text-white/30 uppercase tracking-[0.3em] leading-relaxed">
-                 Human beings lost annually to the heavy silence of depression.
-              </p>
-           </div>
-           <div className="border-l-2 border-fc-red/20 pl-8">
-              <p className="font-body text-fc-red text-xs uppercase tracking-[0.4em] mb-4">Every Single Hour</p>
-              <h2 className="font-heading text-6xl md:text-7xl text-white tracking-tighter leading-none mb-4">80 SOULS</h2>
-              <p className="font-body text-[10px] text-white/30 uppercase tracking-[0.3em] leading-relaxed">
-                 Crossing over while the rest of the world copies a copy of a copy.
-              </p>
-           </div>
-           <div className="border-l-2 border-fc-red/20 pl-8">
-              <p className="font-body text-fc-red text-xs uppercase tracking-[0.4em] mb-4">The Fragmentation</p>
-              <h2 className="font-heading text-6xl md:text-7xl text-white tracking-tighter leading-none mb-4">1 IN 4</h2>
-              <p className="font-body text-[10px] text-white/30 uppercase tracking-[0.3em] leading-relaxed">
-                 Of us are currently fighting a war that has no front lines.
-              </p>
-           </div>
-        </div>
-        <div className="absolute inset-0 bg-red-900/5 mix-blend-overlay pointer-events-none" />
-      </section>
-
-      {/* TICKER */}
-      <div className="bg-black/60 border-y border-white/10 py-6 overflow-hidden whitespace-nowrap">
-        <motion.div 
-          animate={{ x: [0, -1000] }}
-          transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-          className="inline-block text-2xl font-heading tracking-[0.5em] text-fc-gold/40 uppercase"
-        >
-          SLEEP IS THE COUSIN OF DEATH • YOU ARE NOT YOUR PAYCHECK • EVERYTHING IS A COPY • INSOMNIA HELPER • THE NIGHT IS OURS • 
-          SLEEP IS THE COUSIN OF DEATH • YOU ARE NOT YOUR PAYCHECK • EVERYTHING IS A COPY • INSOMNIA HELPER • THE NIGHT IS OURS • 
-        </motion.div>
-      </div>
-
-      {/* ABOUT SECTION */}
-      <section className="py-[80px] max-w-[1200px] mx-auto px-6 md:px-12 grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-        <div>
-           <h2 className="font-heading text-5xl text-white mb-6 uppercase">WHY ARE WE HERE?</h2>
-           <p className="font-body text-lg text-white/60 leading-relaxed mb-8">
-             You wake up at 3:14 AM. The ceiling fan is a copy. The silence is a copy. 
-             You aren't alone in the void. We've built a circle for the exhausted, the anxious, and the night owls who have forgotten what "rest" feels like.
-           </p>
-           <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-              <div className="flex items-start gap-4">
-                 <Shield className="text-fc-gold shrink-0" size={24} />
-                 <div>
-                    <h4 className="font-heading text-xl text-white">ANONYMOUS</h4>
-                    <p className="font-body text-[12px] text-white/40 uppercase">No names. No judgment.</p>
-                 </div>
-              </div>
-              <div className="flex items-start gap-4">
-                 <Zap className="text-fc-gold shrink-0" size={24} />
-                 <div>
-                    <h4 className="font-heading text-xl text-white">IMMEDIATE</h4>
-                    <p className="font-body text-[12px] text-white/40 uppercase">A circle that never sleeps.</p>
-                 </div>
-              </div>
-           </div>
-        </div>
-        <div className="relative group">
-           <img 
-              src="/photos/photo2.jpg" 
-              className="w-full h-[400px] object-cover rounded-2xl filter contrast-[1.3] saturate-[0] brightness-50" 
-              alt="About" 
-           />
-           <div className="absolute inset-0 border border-fc-gold/20 rounded-2xl translate-x-4 translate-y-4 -z-10" />
-        </div>
-      </section>
-
-      {/* CARDS SECTION */}
-      <section className="py-[80px] bg-black/40 border-y border-white/5">
-         <div className="max-w-[1200px] mx-auto px-6 md:px-12">
-            <h3 className="font-heading text-4xl text-white text-center mb-16 tracking-widest uppercase">CHOOSE YOUR PATH</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-               {[
-                 { title: 'THE CIRCLE', desc: 'Real-time support rooms for the sleepless.', icon: Users, path: '/rooms' },
-                 { title: 'STORY BOARD', desc: 'Share your truth anonymously with the void.', icon: Moon, path: '/stories' },
-                 { title: 'CBT-I PROGRAM', desc: 'Reclaim your night with structured sleep therapy.', icon: Zap, path: '/programs' }
-               ].map((card, i) => (
-                 <Link key={i} to={card.path} className="card-brutal group hover:border-fc-gold/30 transition-all">
-                    <card.icon className="text-fc-gold mb-6 group-hover:scale-110 transition-transform" size={40} />
-                    <h4 className="font-heading text-3xl text-white mb-4 uppercase">{card.title}</h4>
-                    <p className="font-body text-sm text-white/60 leading-relaxed uppercase tracking-widest">
-                      {card.desc}
-                    </p>
-                 </Link>
-               ))}
+      {/* COLLECTIVE VOICES (GLOBAL FEED) */}
+      <section className="max-w-[1140px] mx-auto px-6 py-32 border-t border-white/5 w-full">
+         <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
+            <div className="max-w-[440px]">
+               <div className="flex items-center gap-2 text-g/40 mb-4">
+                  <Sparkles size={16} />
+                  <span className="text-[10px] font-bold tracking-[4px] uppercase">Collective Strength</span>
+               </div>
+               <h2 className="font-heading text-5xl md:text-6xl font-bold text-white mb-6 italic">Voices of <span className="text-g">the Night</span></h2>
+               <p className="text-[15px] text-[#8892B0] leading-relaxed italic opacity-70">
+                 "I used to think I was the only person awake in the world. Then I found this place." — Anonymous Member
+               </p>
             </div>
+            <Link to="/stories" className="text-g text-[11px] font-bold uppercase tracking-[4px] border-b border-g/30 pb-1.5 hover:text-white hover:border-white transition-all flex items-center gap-2 group">
+               Cast Your Voice <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+            </Link>
          </div>
+
+         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <AnimatePresence mode="popLayout">
+               {recentStories.map((story, i) => (
+                 <motion.div 
+                   key={story._id}
+                   initial={{ opacity: 0, y: 30 }}
+                   animate={{ opacity: 1, y: 0 }}
+                   transition={{ delay: i * 0.15 }}
+                   onClick={() => navTo('stories')}
+                   className="glass-card p-10 cursor-pointer hover:border-g/40 group transition-all h-[420px] flex flex-col justify-between shadow-2xl bg-gradient-to-br from-white/[0.03] to-transparent"
+                 >
+                    <div>
+                       <div className="flex justify-between items-center mb-8">
+                          <div className="w-10 h-10 rounded-xl bg-ink/80 border border-g/20 flex items-center justify-center text-g font-heading text-lg group-hover:bg-g group-hover:text-black transition-all">
+                             {story.author?.username?.[0]?.toUpperCase() || '?'}
+                          </div>
+                          <span className="text-[10px] font-bold text-[#4A5370] tracking-[3px] uppercase group-hover:text-g transition-colors">{story.mood}</span>
+                       </div>
+                       <p className="font-body text-[17px] text-[#8892B0] leading-[1.8] italic line-clamp-6 opacity-80 group-hover:opacity-100 mb-8 overflow-hidden">
+                         "{story.content}"
+                       </p>
+                    </div>
+                    <div className="flex items-center gap-4 text-[10px] font-bold text-g/50 uppercase tracking-[3px] pt-6 border-t border-white/5">
+                       <Heart size={14} className="group-hover:scale-125 transition-transform" /> {story.beenThereCount} have felt this
+                    </div>
+                 </motion.div>
+               ))}
+            </AnimatePresence>
+            
+            {loading && [1,2,3].map(i => (
+              <div key={i} className="h-[420px] glass animate-pulse rounded-[40px] flex flex-col p-10">
+                 <div className="w-10 h-10 bg-white/5 rounded-xl mb-8" />
+                 <div className="h-4 bg-white/5 w-full rounded mb-4" />
+                 <div className="h-4 bg-white/5 w-4/5 rounded mb-4" />
+                 <div className="h-4 bg-white/5 w-3/4 rounded mb-4" />
+              </div>
+            ))}
+         </div>
+      </section>
+
+      {/* THE TOOLKIT GRID */}
+      <section className="max-w-[1240px] mx-auto px-6 py-32 border-t border-white/5 w-full">
+         <div className="text-center mb-20">
+            <h3 className="font-heading text-4xl md:text-5xl font-bold text-white mb-4 uppercase tracking-[2px] italic">The Toolkit</h3>
+            <p className="text-[12px] text-[#4A5370] font-bold tracking-[4px] uppercase mb-2">Architected for deep recovery</p>
+         </div>
+         <div className="grid grid-cols-2 lg:grid-cols-6 gap-6">
+            {toolkit.map((item, i) => (
+              <motion.div
+                key={i}
+                whileHover={{ y: -6, borderColor: 'rgba(201,168,76,0.4)', background: 'rgba(201,168,76,0.03)' }}
+                onClick={() => navTo(item.path)}
+                className="glass p-10 flex flex-col items-center justify-center gap-5 cursor-pointer text-center group transition-all rounded-[32px] border-white/5"
+              >
+                 <div className="text-4xl group-hover:scale-110 transition-transform duration-700 select-none">{item.ic}</div>
+                 <div className="text-[10px] font-bold text-[#8892B0] group-hover:text-g tracking-[3px] uppercase transition-colors">{item.tit}</div>
+              </motion.div>
+            ))}
+         </div>
+      </section>
+
+      {/* CRISIS SUPPORT BANNER */}
+      <section className="max-w-[1040px] mx-auto px-6 pb-32 w-full mt-10">
+        <motion.div 
+           whileHover={{ scale: 1.01 }}
+           className="flex items-center gap-8 p-10 md:p-14 rounded-[48px] glass border-red-500/10 bg-red-500/[0.03] flex-wrap md:flex-nowrap relative overflow-hidden"
+        >
+          {/* Subtle emergency glow */}
+          <div className="absolute -left-20 -bottom-20 w-64 h-64 bg-red-500/5 rounded-full blur-[100px] pointer-events-none" />
+          
+          <div className="w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-500 shrink-0 shadow-[0_0_30px_rgba(239,68,68,0.1)]">
+             <Shield size={28} />
+          </div>
+          <div className="flex-1 min-w-[240px]">
+            <h4 className="font-heading text-3xl font-bold text-white mb-2 uppercase tracking-wide italic">You are not alone</h4>
+            <p className="text-[15px] text-[#8892B0] leading-relaxed max-w-[500px] opacity-80">
+              If life feels too heavy or the night seems too long, please reach out to our vetted emergency partners.
+            </p>
+          </div>
+          <div className="flex flex-col items-end gap-3 w-full md:w-auto">
+             <div className="text-right hidden md:block">
+                <div className="text-[10px] font-bold text-[#4A5370] uppercase tracking-[3px] mb-1">iCall (India)</div>
+                <div className="text-2xl font-heading font-bold text-red-500 tracking-widest">9152987821</div>
+             </div>
+             <button 
+               className="btn-gold !bg-red-500 !text-white !border-red-600 !px-12 !py-4 w-full md:w-auto shadow-[0_15px_30px_rgba(239,68,68,0.2)]"
+               onClick={() => window.open('tel:9152987821')}
+             >
+               GET IMMEDIATE HELP
+             </button>
+          </div>
+        </motion.div>
       </section>
     </div>
   );

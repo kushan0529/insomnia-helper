@@ -29,10 +29,14 @@ exports.getStory = async (req, res) => {
 
 exports.createStory = async (req, res) => {
   try {
-    const { title, content, mood, tags, isTriggerWarning, isAnonymous } = req.body;
+    const { title, content, mood, tags, isTriggerWarning, isAnonymous, roomId } = req.body;
+    
+    // Fallback for required title
+    const finalTitle = title || (content ? content.split(' ').slice(0, 5).join(' ') + '...' : 'Reflection from the Shadows');
+
     const story = new Story({
       author: req.user._id,
-      title,
+      title: finalTitle,
       content,
       mood,
       tags,
@@ -40,10 +44,20 @@ exports.createStory = async (req, res) => {
       isAnonymous
     });
     await story.save();
+    
+    if (roomId) {
+      const Room = require('../models/Room');
+      await Room.findByIdAndUpdate(roomId, { $push: { posts: story._id } });
+    }
+
     await story.populate('author', 'username');
     
     // Real-time broadcast
-    req.io.emit('newStory', story);
+    if (roomId) {
+      req.io.to(roomId).emit('roomNewPost', story);
+    } else {
+      req.io.emit('newStory', story);
+    }
     
     res.status(201).json(story);
   } catch (error) {

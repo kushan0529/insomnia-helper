@@ -3,55 +3,70 @@ import { useDispatch, useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 import { createStory } from '../../redux/slices/storySlice';
 import { toast } from 'react-hot-toast';
-import styles from '../../pages/Dashboard.module.css';
+import { ShieldAlert, UserCheck, Send, Info, UserX, Sparkles } from 'lucide-react';
 
-const PostComposer = () => {
+const PostComposer = ({ roomId }) => {
+  const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [mood, setMood] = useState('General');
+  const [mood, setMood] = useState('Surviving');
   const [isTriggerWarning, setIsTriggerWarning] = useState(false);
   const [isAnonymous, setIsAnonymous] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false);
   
   const dispatch = useDispatch();
-  const { user } = useSelector(state => state.auth);
+  const { user } = useSelector(state => state.auth || { user: null });
 
   const moods = [
-    { label: 'HOPELESS', val: 'Hopeless', color: '#8b0000' },
-    { label: 'ANGRY', val: 'Angry', color: '#92400e' },
-    { label: 'NUMB', val: 'Numb', color: '#374151' },
-    { label: 'SURVIVING', val: 'Surviving', color: '#166534' },
-    { label: 'FIGHTING BACK', val: 'Fighting Back', color: '#c9a84c' }
+    { label: 'HOPELESS', val: 'Hopeless', color: '#ef4444' },
+    { label: 'ANGRY', val: 'Angry', color: '#f59e0b' },
+    { label: 'NUMB', val: 'Numb', color: '#6b7280' },
+    { label: 'SURVIVING', val: 'Surviving', color: '#10b981' },
+    { label: 'FIGHTING BACK', val: 'Fighting Back', color: '#C9A84C' }
   ];
 
   const handleSubmit = async () => {
     if (!content.trim()) return;
     
     const result = await dispatch(createStory({
+      title,
       content,
       mood,
       isTriggerWarning,
-      isAnonymous
+      isAnonymous,
+      roomId
     }));
 
     if (createStory.fulfilled.match(result)) {
+      setTitle('');
       setContent('');
       setIsExpanded(false);
-      toast.success("STORY SHARED WITH THE CIRCLE");
+      toast.success("Reflection cast into the sanctuary.");
     } else {
-      toast.error("COULD NOT SHARE. TRY AGAIN.");
+      toast.error("The night rejected your words. Try again.");
     }
   };
 
   return (
-    <div className={styles.composer}>
+    <div className={`glass p-6 md:p-8 border-white/5 transition-all duration-500 ${isExpanded ? 'bg-white/[0.04] shadow-[0_32px_128px_rgba(0,0,0,0.4)]' : 'bg-white/[0.02]'}`}>
       <div className="flex gap-4">
-        <div className="w-10 h-10 rounded-full border border-fc-gold flex items-center justify-center font-heading text-fc-gold">
+        <div className="w-11 h-11 rounded-xl bg-ink/80 border border-g/30 flex items-center justify-center font-heading text-g shadow-lg shrink-0">
           {user?.username?.[0]?.toUpperCase() || 'U'}
         </div>
         <div className="flex-1">
+          {isExpanded && (
+            <motion.input
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              type="text"
+              placeholder="Title (Optional)"
+              className="w-full bg-transparent border-none outline-none font-heading text-2xl md:text-3xl text-g placeholder:text-g/20 mb-4 uppercase tracking-tighter"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+          )}
           <textarea
-            className={`${styles.composerTextarea} font-sans font-light`}
-            placeholder="WHAT KEPT YOU UP LAST NIGHT?"
+            className="w-full bg-transparent border-none outline-none font-body text-[16px] md:text-[18px] text-white placeholder:text-[#4A5370] resize-none h-[54px] overflow-hidden focus:h-32 transition-all duration-500 italic"
+            placeholder="Share what is keeping you awake..."
             value={content}
             onChange={(e) => setContent(e.target.value)}
             onFocus={() => setIsExpanded(true)}
@@ -67,47 +82,60 @@ const PostComposer = () => {
             exit={{ height: 0, opacity: 0 }}
             className="overflow-hidden"
           >
-            <div className="mt-6 border-t border-white/5 pt-6">
-               <div className="font-heading text-[10px] text-fc-gold tracking-widest mb-3">HOW ARE YOU FEELING?</div>
-               <div className="flex flex-wrap gap-2">
+            <div className="mt-8 border-t border-white/5 pt-8">
+               <div className="flex items-center gap-2 mb-4 text-g/40">
+                  <Sparkles size={12} />
+                  <span className="text-[10px] font-bold tracking-[3px] uppercase">Emotional Resonance</span>
+               </div>
+               <div className="flex flex-wrap gap-2 mb-10">
                   {moods.map(m => (
                     <button
                       key={m.val}
                       onClick={() => setMood(m.val)}
-                      className="px-3 py-1.5 border border-white/10 font-heading text-[11px] transition-all"
-                      style={{
-                        backgroundColor: mood === m.val ? m.color : 'transparent',
-                        borderColor: mood === m.val ? m.color : 'rgba(255,255,255,0.1)',
-                        color: mood === m.val ? '#fff' : 'rgba(255,255,255,0.4)'
-                      }}
+                      className={`px-4 py-2 rounded-lg font-heading text-[11px] font-bold tracking-widest transition-all border ${
+                        mood === m.val 
+                        ? 'bg-g/10 border-g text-g shadow-[0_0_15px_rgba(201,168,76,0.1)]' 
+                        : 'bg-transparent border-white/5 text-[#4A5370] hover:text-[#8892B0] hover:border-white/20'
+                      }`}
                     >
                       {m.label}
                     </button>
                   ))}
                </div>
 
-               <div className="flex justify-between items-center mt-8">
+               <div className="flex flex-col sm:flex-row justify-between items-center gap-6">
                   <div className="flex gap-6">
                     <button 
                       onClick={() => setIsTriggerWarning(!isTriggerWarning)}
-                      className={`flex items-center gap-2 font-mono text-[10px] ${isTriggerWarning ? 'text-fc-red underline' : 'opacity-40'}`}
+                      className={`flex items-center gap-2 transition-all group ${isTriggerWarning ? 'text-red-500 font-bold' : 'text-[#4A5370] hover:text-[#8892B0]'}`}
                     >
-                      ⚠️ TRIGGER WARNING
+                      <ShieldAlert size={16} className={`${isTriggerWarning ? 'animate-pulse' : 'opacity-40'}`} />
+                      <span className="text-[10px] uppercase tracking-widest">Trigger Warning</span>
                     </button>
                     <button 
                        onClick={() => setIsAnonymous(!isAnonymous)}
-                       className={`flex items-center gap-2 font-mono text-[10px] ${isAnonymous ? 'text-fc-gold underline' : 'opacity-40'}`}
+                       className={`flex items-center gap-2 transition-all group ${isAnonymous ? 'text-g font-bold' : 'text-[#4A5370] hover:text-[#8892B0]'}`}
                     >
-                      👤 ANONYMOUS: {isAnonymous ? 'ON' : 'OFF'}
+                      {isAnonymous ? <UserX size={16} /> : <UserCheck size={16} />}
+                      <span className="text-[10px] uppercase tracking-widest">Identity Protected</span>
                     </button>
                   </div>
 
-                  <button 
-                    onClick={handleSubmit}
-                    className="bg-fc-gold text-black px-6 py-2 font-heading tracking-widest hover:scale-105 transition-transform"
-                  >
-                    SHARE
-                  </button>
+                  <div className="flex items-center gap-4">
+                     <button 
+                       onClick={() => setIsExpanded(false)}
+                       className="text-[10px] font-bold text-[#4A5370] uppercase tracking-widest hover:text-white transition-colors"
+                     >
+                       Cancel
+                     </button>
+                     <button 
+                       onClick={handleSubmit}
+                       className="btn-gold !py-3 !px-10 flex items-center gap-3 group"
+                     >
+                       <span className="font-bold tracking-[2px]">CAST REFLECTION</span>
+                       <Send size={16} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                     </button>
+                  </div>
                </div>
             </div>
           </motion.div>

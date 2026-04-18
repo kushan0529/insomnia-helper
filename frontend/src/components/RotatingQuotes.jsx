@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const quotes = [
-  "3AM is just loneliness wearing a clock.",
-  "You are not broken. You are exhausted.",
-  "The night is loudest when you face it alone.",
-  "Sleep is the first thing anxiety steals from you.",
-  "You survived every sleepless night so far.",
-  "This is your life and it's ending one minute at a time.",
-  "It's only after we've lost everything that we're free."
+  "In the deep stillness of the night, find your breath.",
+  "Every sunset is an opportunity to reset.",
+  "You are not alone in the quiet hours.",
+  "Rest is not earned, it is a basic human right.",
+  "Softly, the night heals what the day has worn.",
+  "Your worth is not measured by your productivity.",
+  "Deep breath in, let the weight of the day drift away."
 ];
 
 const RotatingQuotes = () => {
@@ -17,24 +17,29 @@ const RotatingQuotes = () => {
   useEffect(() => {
     const timer = setInterval(() => {
       setIndex((prev) => (prev + 1) % quotes.length);
-    }, 4500);
+    }, 5000);
     return () => clearInterval(timer);
   }, []);
 
   return (
-    <div className="h-16 flex items-center justify-center overflow-hidden py-12">
+    <div className="h-20 flex items-center justify-center overflow-hidden py-12">
       <AnimatePresence mode="wait">
         <motion.div
           key={index}
-          initial={{ opacity: 0, y: 20, filter: 'blur(10px)' }}
-          animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-          exit={{ opacity: 0, y: -20, filter: 'blur(10px)' }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="text-center"
+          initial={{ opacity: 0, scale: 0.98, filter: 'blur(8px)' }}
+          animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+          exit={{ opacity: 0, scale: 1.02, filter: 'blur(8px)' }}
+          transition={{ duration: 1.2, ease: "easeInOut" }}
+          className="text-center px-6"
         >
-          <p className="font-heading text-fc-gold text-lg md:text-2xl uppercase tracking-[0.2em] relative inline-block">
-            {quotes[index]}
-            <span className="absolute -bottom-2 left-1/4 right-1/4 h-[1px] bg-fc-red/50 shadow-[0_0_8px_rgba(139,0,0,0.5)]"></span>
+          <p className="font-heading text-g text-xl md:text-2xl font-bold tracking-wide relative inline-block italic">
+            "{quotes[index]}"
+            <motion.span 
+              initial={{ width: 0 }}
+              animate={{ width: '60%' }}
+              transition={{ duration: 2, delay: 0.3 }}
+              className="absolute -bottom-3 left-1/2 -translate-x-1/2 h-px bg-g/20"
+            />
           </p>
         </motion.div>
       </AnimatePresence>
