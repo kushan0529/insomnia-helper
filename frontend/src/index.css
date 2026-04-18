@@ -1,0 +1,125 @@
+@import "tailwindcss";
+
+@theme {
+  --font-heading: "Bebas Neue", sans-serif;
+  --font-body: "Special Elite", serif;
+  --color-fc-black: #050008;
+  --color-fc-grey: #121212;
+  --color-fc-industrial: #2c2c2c;
+  --color-fc-gold: #c9a84c;
+  --color-fc-red: #8b0000;
+  --color-fc-white: #d4d4d4;
+  --color-fc-purple: #3b0a45;
+}
+
+@layer base {
+  :root {
+    background-color: #050008;
+    color: #d4d4d4;
+  }
+
+  body {
+    margin: 0;
+    background: #050008;
+    overflow-x: hidden;
+    font-family: 'Special Elite', serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+@layer components {
+  /* Cinematic Global Background Overlays */
+  .bg-fixed-image {
+    position: fixed;
+    inset: 0;
+    background: url('/photos/photo1.jpg') no-repeat center center fixed;
+    background-size: cover;
+    opacity: 0.18;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .bg-dark-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .bg-gradient-mesh {
+    position: fixed;
+    inset: 0;
+    z-index: 2;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 50%, 
+        rgba(139,0,0,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 80% at 80% 30%, 
+        rgba(59,10,69,0.15) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 40% at 50% 100%, 
+        rgba(201,168,76,0.06) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  .film-grain {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 3;
+    opacity: 0.6;
+  }
+
+  .vignette {
+    position: fixed;
+    inset: 0;
+    box-shadow: inset 0 0 150px rgba(0,0,0,0.8);
+    pointer-events: none;
+    z-index: 4;
+  }
+
+  .tyler-flash {
+    position: fixed;
+    inset: 0;
+    background: white;
+    pointer-events: none;
+    z-index: 5;
+    mix-blend-mode: overlay;
+    display: none;
+  }
+
+  /* Brutalist Components */
+  .button-fight {
+    @apply px-8 py-3 bg-fc-gold text-fc-black font-heading tracking-widest transition-all hover:scale-105 active:scale-95;
+    box-shadow: 4px 4px 0px rgba(0,0,0,1);
+  }
+
+  .card-brutal {
+    @apply bg-fc-black/60 border border-white/10 p-8 rounded-xl backdrop-blur-xl;
+  }
+}
+
+@layer utilities {
+  .text-glow-gold {
+    text-shadow: 0 0 10px rgba(201, 168, 76, 0.4);
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  @keyframes slide-down {
+    from { transform: translateY(-100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  .animate-slide-down {
+    animation: slide-down 0.4s ease-out forwards;
+  }
+}
