@@ -1,0 +1,117 @@
+@import "tailwindcss";
+
+@theme {
+  --font-heading: "Cormorant Garamond", serif;
+  --font-body: "Outfit", sans-serif;
+  
+  --color-g: #C9A84C;
+  --color-g2: #F0D080;
+  --color-ink: #04060F;
+  --color-s1: #0A0D1A;
+  --color-s2: #111525;
+  --color-s3: #181C2E;
+  --color-s4: #1F2338;
+  
+  --animate-moon-breath: moonBreath 10s ease-in-out infinite;
+  --animate-star-twinkle: starTwinkle 8s ease-in-out infinite;
+  --animate-grain: grain .45s steps(1) infinite;
+  --animate-pg-in: pgIn .35s cubic-bezier(.4, 0, .2, 1);
+}
+
+@keyframes moonBreath {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.07); opacity: .85; }
+}
+
+@keyframes starTwinkle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .7; }
+}
+
+@keyframes grain {
+  0% { transform: translate(0,0); }
+  25% { transform: translate(-5%,-3%); }
+  50% { transform: translate(4%,5%); }
+  75% { transform: translate(-3%,4%); }
+  100% { transform: translate(4%,-2%); }
+}
+
+@keyframes pgIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@layer base {
+  :root {
+    --g: #C9A84C;
+    --g2: #F0D080;
+    --ink: #04060F;
+    --s1: #0A0D1A;
+    --s2: #111525;
+    --w: #FFFFFF;
+    --m: #8892B0;
+    --m2: #4A5370;
+    --r: 16px;
+    --r2: 12px;
+  }
+
+  html, body {
+    height: 100%;
+    @apply bg-ink text-white font-body;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, .font-serif {
+    @apply font-heading;
+  }
+}
+
+@layer components {
+  /* Dynamic Background Components */
+  .bg-moon-glow {
+    @apply absolute -top-[200px] -right-[180px] w-[900px] h-[900px] rounded-full;
+    background: radial-gradient(circle at 38% 40%, rgba(201,168,76,.28) 0%, rgba(201,168,76,.1) 30%, rgba(201,168,76,.03) 60%, transparent 75%);
+    animation: moonBreath 10s ease-in-out infinite;
+  }
+
+  .film-grain {
+    @apply absolute -inset-1/2 w-[200%] h-[200%] opacity-[0.032] pointer-events-none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.92' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    animation: grain .45s steps(1) infinite;
+  }
+
+  /* Glassmorphism System */
+  .glass {
+    @apply bg-s1/70 backdrop-blur-[20px] border border-g/10 rounded-[var(--r)] saturate-[140%];
+  }
+
+  .glass-card {
+    @apply bg-s1/55 backdrop-blur-[14px] border border-white/10 rounded-[var(--r2)] transition-all duration-300;
+  }
+
+  /* Premium Buttons */
+  .btn-gold {
+    @apply bg-g text-black font-bold text-[13px] px-6 py-3 rounded-full transition-all duration-300 hover:bg-g2 hover:-translate-y-px hover:shadow-[0_10px_28px_rgba(201,168,76,0.3)];
+  }
+
+  .btn-outline {
+    @apply bg-transparent text-white font-medium text-[13px] px-6 py-3 rounded-full border border-white/14 transition-all duration-300 hover:border-g hover:text-g;
+  }
+  
+  .btn-glass {
+    @apply bg-s1/80 border border-white/10 text-white text-[13px] font-medium px-5 py-2.5 rounded-full transition-all duration-300 hover:border-g hover:text-g;
+  }
+}
+
+@layer utilities {
+  .text-gradient-gold {
+    background: linear-gradient(135deg, #C9A84C 0%, #F0D080 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .inner-glow-gold {
+    box-shadow: inset 0 0 30px rgba(201, 168, 76, 0.05);
+  }
+}
