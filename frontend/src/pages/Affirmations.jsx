@@ -29,6 +29,7 @@ const AFFS = [
   { t: 'The fact that you are reading this means you are still trying. That matters.', c: 'all' },
   { t: 'Your nervous system learned to be afraid. It can also learn to be safe.', c: 'anxiety' },
   { t: 'Sleep is not something you do — it is something you allow.', c: 'sleep' },
+  { t: 'you are alone if leave every one ,but you are lonely when you dont have any one to talk .', c: 'lonellines vs aloneliness' }
 ];
 
 const Affirmations = () => {
@@ -39,7 +40,7 @@ const Affirmations = () => {
   const current = filtered[index % filtered.length];
 
   const next = () => setIndex(i => i + 1);
-  
+
   const copy = () => {
     navigator.clipboard.writeText(`"${current.t}"`).then(() => {
       toast.success('Copied to clipboard!');
@@ -59,7 +60,7 @@ const Affirmations = () => {
       <div className="glass p-12 text-center relative overflow-hidden mb-8 min-h-[300px] flex flex-col items-center justify-center">
         {/* Large Quote Mark Decoration */}
         <span className="absolute top-[-40px] left-4 font-heading text-[220px] text-g opacity-[0.05] pointer-events-none select-none">“</span>
-        
+
         <AnimatePresence mode="wait">
           <motion.div
             key={current.t}
@@ -77,9 +78,8 @@ const Affirmations = () => {
             <button
               key={f}
               onClick={() => { setFilter(f); setIndex(0); }}
-              className={`px-4 py-1.5 rounded-full text-[11px] font-medium transition-all border ${
-                filter === f ? 'bg-g/10 border-g/30 text-g' : 'bg-white/5 border-transparent text-[#8892B0] hover:text-white'
-              }`}
+              className={`px-4 py-1.5 rounded-full text-[11px] font-medium transition-all border ${filter === f ? 'bg-g/10 border-g/30 text-g' : 'bg-white/5 border-transparent text-[#8892B0] hover:text-white'
+                }`}
             >
               {f === 'all' ? 'All' : f === 'self' ? 'Self-worth' : f.charAt(0).toUpperCase() + f.slice(1)}
             </button>
@@ -97,7 +97,7 @@ const Affirmations = () => {
         <span className="text-[10px] font-bold tracking-[2px] uppercase text-[#4A5370] mb-6 block">More to explore</span>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {filtered.slice(index + 1, index + 5).map((a, i) => (
-            <motion.div 
+            <motion.div
               key={i}
               whileHover={{ borderColor: 'rgba(201,168,76,0.3)', color: 'white' }}
               onClick={() => setIndex(AFFS.indexOf(a))}
