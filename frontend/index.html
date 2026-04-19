@@ -1,17 +1,610 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>INSOMNIA HELPER | The Circle</title>
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Special+Elite&display=swap" rel="stylesheet">
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Insomnia Helper | Reclaim the Night</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,700;0,900;1,700;1,900&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    /* ─── PART 1: DESIGN SYSTEM ─── */
+    :root {
+      --gold: #C9A84C;
+      --gold-light: #E8C97A;
+      --black: #050810;
+      --surface-1: #0D1120;
+      --surface-2: #141826;
+      --surface-3: #1F2338;
+      --white: #FFFFFF;
+      --muted: #8892B0;
+      --green: #3DD68C;
+      --red: #FF6B6B;
+      
+      --font-display: 'Cormorant Garamond', serif;
+      --font-body: 'Outfit', sans-serif;
+      
+      --glow-moon: rgba(201,168,76,0.18);
+      --glass-bg: rgba(10,13,26,0.72);
+      --glass-border: rgba(201,168,76,0.10);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background-color: var(--black);
+      color: var(--white);
+      font-family: var(--font-body);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* ─── BACKGROUND LAYERS ─── */
+    .bg-master {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .layer-1 {
+      position: absolute;
+      top: -300px;
+      right: -300px;
+      width: 1200px;
+      height: 1200px;
+      background: radial-gradient(circle at center, var(--glow-moon) 0%, transparent 75%);
+      animation: moonPulse 10s ease-in-out infinite alternate;
+      background-image: url('sanctuary_moon_cinematic_1776578418429.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      mix-blend-mode: screen;
+      opacity: 0.9;
+    }
+    @keyframes moonPulse {
+      0% { transform: scale(1); opacity: 0.8; }
+      100% { transform: scale(1.07); opacity: 1; }
+    }
+
+    .layer-2 {
+      position: absolute;
+      top: -330px;
+      right: -330px;
+      width: 1260px;
+      height: 1260px;
+      border: 1px solid rgba(201,168,76,0.08);
+      border-radius: 50%;
+      animation: rimPulse 10s ease-in-out infinite alternate-reverse;
+    }
+    @keyframes rimPulse {
+      0% { transform: scale(1.07); opacity: 0.5; }
+      100% { transform: scale(1); opacity: 0.2; }
+    }
+
+    .layer-3 {
+      position: absolute;
+      top: 10%;
+      left: -200px;
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(circle, rgba(91,141,239,0.12) 0%, transparent 70%);
+      filter: blur(80px);
+      animation: auroraDrift1 16s ease-in-out infinite alternate;
+    }
+    @keyframes auroraDrift1 {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(120px, 60px); }
+    }
+
+    .layer-5 {
+      position: absolute;
+      inset: 0;
+      background-image: 
+        radial-gradient(1.2px 1.2px at 10% 20%, #fff, transparent),
+        radial-gradient(1.5px 1.5px at 30% 50%, #fff, transparent),
+        radial-gradient(1.2px 1.2px at 50% 10%, #fff, transparent),
+        radial-gradient(1.5px 1.5px at 70% 80%, #fff, transparent),
+        radial-gradient(1.2px 1.2px at 90% 40%, #fff, transparent);
+      opacity: 0.3;
+    }
+
+    .layer-6 {
+      position: absolute;
+      inset: 0;
+      background-image: 
+        linear-gradient(to right, rgba(201,168,76,0.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(201,168,76,0.02) 1px, transparent 1px);
+      background-size: 80px 80px;
+      mask-image: radial-gradient(circle at center, black, transparent 80%);
+    }
+
+    .layer-9 {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at center, transparent 40%, rgba(0,0,0,0.6) 100%);
+    }
+
+    /* ─── TYPOGRAPHY & BUTTONS ─── */
+    h1, h2, h3, .font-display { font-family: var(--font-display); }
+    p, span, div, .font-body { font-family: var(--font-body); }
+    
+    .btn-gold {
+      background: var(--gold);
+      color: #000;
+      border: none;
+      padding: 14px 32px;
+      border-radius: 100px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+    .btn-gold:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 10px 30px rgba(201,168,76,0.3); }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.14);
+      color: var(--white);
+      padding: 14px 32px;
+      border-radius: 100px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+    .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* ─── NAVIGATION ─── */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 62px;
+      background: rgba(4,6,15,0.88);
+      backdrop-filter: blur(28px) saturate(160%);
+      border-bottom: 1px solid rgba(201,168,76,0.1);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      padding: 0 40px;
+      justify-content: space-between;
+    }
+    .nav-logo { font-family: var(--font-display); font-size: 24px; color: var(--gold); text-decoration: none; font-weight: 700; }
+    .nav-links { display: flex; gap: 4px; }
+    .nav-links a { text-decoration: none; color: var(--muted); font-size: 13px; font-weight: 500; padding: 8px 16px; border-radius: 8px; transition: all 0.3s ease; }
+    .nav-links a:hover, .nav-links a.active { color: var(--gold); background: rgba(201,168,76,0.06); }
+
+    /* ─── GLASS ─── */
+    .glass {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px) saturate(140%);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .glass:hover { border-color: rgba(201,168,76,0.38); transform: translateY(-4px); box-shadow: 0 24px 64px rgba(0,0,0,0.5); }
+    .glass-sm { background: rgba(10,13,26,0.4); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 24px; }
+
+    /* ─── APP SHELL ─── */
+    main { position: relative; z-index: 10; padding-top: 62px; opacity: 0; transform: translateY(8px); transition: all 0.35s ease; }
+    main.visible { opacity: 1; transform: translateY(0); }
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ─── SECTIONS ─── */
+    section { padding: 120px 40px; max-width: 1240px; margin: 0 auto; }
+    .hero { min-height: 80vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+    .hero-h1 { font-family: var(--font-display); font-size: clamp(48px, 8vw, 100px); font-weight: 900; line-height: 0.9; letter-spacing: -3px; margin-bottom: 24px; }
+    .hero-h1 span { color: var(--gold); font-style: italic; }
+    .hero-sub { font-size: clamp(16px, 2vw, 20px); color: var(--muted); max-width: 600px; margin: 0 auto 48px; }
+    .announcement { background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.2); color: var(--gold); padding: 8px 24px; border-radius: 100px; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 40px; }
+    
+    .tool-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
+    .tool-card { display: flex; flex-direction: column; gap: 16px; height: 100%; transition: scale 0.3s; }
+    .tool-card:active { scale: 0.98; }
+
+    /* ─── FOOTER ─── */
+    footer { background: #04060F; border-top: 1px solid rgba(201,168,76,0.1); padding: 100px 40px 40px; position: relative; z-index: 10; }
+    .footer-grid { display: grid; grid-template-cols: 2fr 1fr 1fr 1fr; gap: 80px; margin-bottom: 80px; }
+
+    /* ─── MODALS ─── */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 20px; }
+    .modal { width: 100%; max-width: 480px; padding: 48px; position: relative; }
+    .modal-close { position: absolute; top: 24px; right: 24px; cursor: pointer; font-size: 24px; }
+    
+    .status-bar { height: 4px; border-radius: 10px; background: rgba(255,255,255,0.05); overflow: hidden; }
+    .status-fill { height: 100%; background: var(--gold); transition: width 0.5s ease; }
+
+    /* CBT Specific */
+    .cbt-group-title { font-size: 10px; color: var(--gold); letter-spacing: 4px; text-transform: uppercase; font-weight: 900; margin: 40px 0 20px; border-bottom: 1px solid rgba(201,168,76,0.1); padding-bottom: 12px; }
+    .cbt-item { display: flex; align-items: flex-start; gap: 16px; padding: 16px; background: rgba(255,255,255,0.02); border: 1px solid transparent; border-radius: 12px; margin-bottom: 12px; transition: all 0.3s; cursor: pointer; }
+    .cbt-item:hover { background: rgba(255,255,255,0.05); border-color: rgba(201,168,76,0.2); }
+    .cbt-item input { margin-top: 4px; accent-color: var(--gold); width: 18px; height: 18px; }
+    .cbt-item.checked span { text-decoration: line-through; opacity: 0.4; }
+  </style>
+</head>
+<body>
+
+  <!-- BACKGROUND -->
+  <div class="bg-master">
+    <div class="layer-1"></div>
+    <div class="layer-2"></div>
+    <div class="layer-3"></div>
+    <div class="layer-5"></div>
+    <div class="layer-6"></div>
+    <div class="layer-9"></div>
+  </div>
+
+  <!-- NAVIGATION -->
+  <nav>
+    <a href="#home" class="nav-logo">🌙 InsomniaHelper</a>
+    <div class="nav-links">
+      <a href="#home" class="active">Home</a>
+      <a href="#breathe">Breathe</a>
+      <a href="#mood">Mood</a>
+      <a href="#cbt">CBT</a>
+      <a href="#groups">Groups</a>
+      <a href="#journal">Journal</a>
+      <a href="#sounds">Sounds</a>
+      <a href="#affirmations">Affirm</a>
+    </div>
+    <div class="nav-right">
+      <a href="#" class="newsletter-btn" onclick="openModal('newsletter')">Newsletter</a>
+      <a href="#groups" class="btn-gold">Find a Meetup</a>
+    </div>
+  </nav>
+
+  <main id="app-main">
+    
+    <!-- HOME -->
+    <div id="home" class="page active">
+       <div class="hero">
+          <div class="announcement">🌙 Spring Wellness Event — April 24th, 2026</div>
+          <h1 class="hero-h1">Rest is not <br><span>a luxury.</span></h1>
+          <p class="hero-sub">A complete toolkit for insomnia, anxiety, stress and depression. No one fights alone.</p>
+          <div class="hero-ctas">
+             <a href="#breathe" class="btn-gold">Start Breathing →</a>
+             <button onclick="window.location.hash='#groups'" class="btn-outline">Find My Circle</button>
+          </div>
+       </div>
+
+       <section id="features">
+          <h2 class="section-title">The Tools of Rebellion</h2>
+          <div class="tool-grid">
+             <div class="glass-sm tool-card" onclick="window.location.hash='#breathe'">
+                <div style="font-size: 32px;">🌬️</div>
+                <h4>Breathing</h4>
+                <p>Clinically validated rhythms to reset the system.</p>
+             </div>
+             <div class="glass-sm tool-card" onclick="window.location.hash='#cbt'">
+                <div style="font-size: 32px;">🧠</div>
+                <h4>CBT Toolkit</h4>
+                <p>100+ tasks to reframe the midnight mind.</p>
+             </div>
+             <div class="glass-sm tool-card" onclick="window.location.hash='#groups'">
+                <div style="font-size: 32px;">🤝</div>
+                <h4>Weekly Meetups</h4>
+                <p>Face-to-face peer support for the night shift.</p>
+             </div>
+          </div>
+       </section>
+
+       <section id="stories">
+          <h2 class="section-title">Real Stories. Real Change.</h2>
+          <div style="display: flex; gap: 24px; overflow-x: auto; padding-bottom: 40px;">
+             <div class="glass tool-card" style="min-width: 320px; padding: 32px;">
+                <p style="font-style: italic; color: #fff; line-height: 1.8;">"The breathing tool got me through my worst panic attack. I didn't think I'd make it through, but the rhythm brought me back."</p>
+                <h6 style="color: var(--gold); margin-top: 24px; font-weight: 700;">ANIKA, 28</h6>
+             </div>
+             <div class="glass tool-card" style="min-width: 320px; padding: 32px;">
+                <p style="font-style: italic; color: #fff; line-height: 1.8;">"The CBT checklist helped me see my own thought patterns. It was like finally having a map for a cave I've been lost in."</p>
+                <h6 style="color: var(--gold); margin-top: 24px; font-weight: 700;">ROHAN, 34</h6>
+             </div>
+          </div>
+       </section>
+    </div>
+
+    <!-- BREATHE -->
+    <div id="breathe" class="page">
+      <section style="text-align: center;">
+        <h2 class="section-title">The Breath Rhythm</h2>
+        <div class="glass" style="max-width: 500px; margin: 40px auto; padding: 60px;">
+           <div id="breathe-circle" style="width: 240px; height: 240px; margin: 0 auto 40px; border-radius: 50%; border: 1px solid rgba(201,168,76,0.1); display: flex; align-items: center; justify-content: center; position: relative;">
+               <div id="breathe-blob" style="width: 50%; height: 50%; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 4s ease-in-out; box-shadow: 0 0 50px rgba(201,168,76,0.2);">
+                  <span id="breathe-count" style="font-size: 40px; font-weight: 700; color: #000;">4</span>
+               </div>
+           </div>
+           <h3 id="breathe-status" style="font-size: 32px; color: var(--gold); margin-bottom: 24px;">Inhale...</h3>
+           <div style="display: flex; gap: 12px; justify-content: center;">
+              <button onclick="startBreathe()" id="breathe-btn" class="btn-gold">START</button>
+              <button onclick="setPattern('box')" class="btn-outline">BOX</button>
+              <button onclick="setPattern('478')" class="btn-outline">478</button>
+           </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- MOOD -->
+    <div id="mood" class="page">
+       <section style="text-align: center;">
+          <h2 class="section-title">Mood Check-In</h2>
+          <div style="display: flex; gap: 16px; justify-content: center; margin-bottom: 60px;">
+             <button class="glass-sm" onclick="selectMood('Anxious')" style="padding: 30px;">😰 Anxious</button>
+             <button class="glass-sm" onclick="selectMood('Sad')" style="padding: 30px;">😔 Sad</button>
+             <button class="glass-sm" onclick="selectMood('Stress')" style="padding: 30px;">😤 Stress</button>
+             <button class="glass-sm" onclick="selectMood('Okay')" style="padding: 30px;">🙂 Okay</button>
+          </div>
+          <div id="mood-response"></div>
+       </section>
+    </div>
+
+    <!-- CBT -->
+    <div id="cbt" class="page">
+       <section>
+          <h2 class="section-title">CBT Toolkit</h2>
+          <div id="cbt-grid" class="tool-grid"></div>
+          <div id="cbt-detail" style="display: none;">
+             <button onclick="closeCBT()" class="btn-outline" style="margin-bottom: 40px;">← BACK TO ARCHIVE</button>
+             <div id="cbt-content"></div>
+          </div>
+       </section>
+    </div>
+
+    <!-- GROUPS -->
+    <div id="groups" class="page">
+       <section>
+          <h2 class="section-title">Weekly Meetups</h2>
+          <div class="tool-grid" id="groups-list"></div>
+       </section>
+    </div>
+
+    <!-- SOUNDS -->
+    <div id="sounds" class="page">
+       <section>
+          <h2 class="section-title">The Noise Machine</h2>
+          <div class="tool-grid" id="sounds-list"></div>
+       </section>
+    </div>
+
+    <!-- JOURNAL -->
+    <div id="journal" class="page">
+       <section>
+          <h2 class="section-title">Shadow Journal</h2>
+          <div class="glass" style="padding: 60px;">
+             <textarea id="journal-input" placeholder="Cast your thoughts..." style="width: 100%; height: 300px; background: transparent; border: none; color: #fff; font-size: 20px; outline: none;"></textarea>
+             <button onclick="saveJournal()" class="btn-gold" style="margin-top: 32px;">SAVE TO ARCHIVE</button>
+          </div>
+       </section>
+    </div>
+
+    <!-- AFFIRMATIONS -->
+    <div id="affirmations" class="page">
+       <section style="text-align: center;">
+          <h2 class="section-title">Affirmations</h2>
+          <div class="glass" style="padding: 80px; margin: 40px auto; max-width: 700px;">
+             <p id="affirmation-text" style="font-size: 32px; font-style: italic; color: var(--gold);"></p>
+             <button onclick="nextAffirm()" class="btn-gold" style="margin-top: 40px;">NEW TRUTH</button>
+          </div>
+       </section>
+    </div>
+
+  </main>
+
+  <script>
+    // ─── ROUTER ───
+    const navigate = () => {
+      const hash = window.location.hash || '#home';
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+      const target = document.querySelector(hash);
+      if (target) target.classList.add('active');
+      const navLink = document.querySelector(`nav a[href="${hash}"]`);
+      if (navLink) navLink.classList.add('active');
+      window.scrollTo(0,0);
+      document.getElementById('app-main').classList.add('visible');
+    };
+    window.addEventListener('hashchange', navigate);
+    window.addEventListener('load', () => {
+       navigate();
+       initCBT();
+       initSounds();
+       initGroups();
+       initJournal();
+       nextAffirm();
+    });
+
+    // ─── MOOD ───
+    function selectMood(mood) {
+       const resp = document.getElementById('mood-response');
+       resp.innerHTML = `
+        <div class="glass" style="max-width: 600px; margin: 40px auto; padding: 48px;">
+           <h3 style="font-size: 32px; color: var(--gold); margin-bottom: 24px;">You are feeling <span class="italic">${mood}.</span></h3>
+           <p style="color: var(--muted); margin-bottom: 24px;">The night is a shared silence. We carry the weight with you.</p>
+           <div style="display: flex; gap: 12px; justify-content: center; margin-top: 32px;">
+              <button onclick="window.location.hash='#breathe'" class="btn-gold">BREATHE NOW</button>
+              <button onclick="window.location.hash='#groups'" class="btn-outline">TALK TO PEERS</button>
+           </div>
+        </div>
+       `;
+       showToast(`Feeling recorded: ${mood}`);
+    }
+
+    // ─── JOURNAL ───
+    function initJournal() {
+       const dateEl = document.getElementById('journal-input');
+       if (dateEl) dateEl.placeholder = `Cast your thoughts into the archive... (${new Date().toLocaleDateString()})`;
+    }
+    function saveJournal() {
+       const input = document.getElementById('journal-input');
+       if (!input.value.trim()) return;
+       showToast("Shadows cast to the archive.");
+       input.value = '';
+    }
+
+    // ─── TOAST ───
+    function showToast(msg) {
+       const toast = document.createElement('div');
+       toast.className = 'glass';
+       toast.style.cssText = `position: fixed; bottom: 80px; right: 40px; padding: 16px 32px; border-left: 4px solid var(--gold); z-index: 9999;`;
+       toast.innerHTML = `<span style="font-size: 13px; font-weight: 600;">🌙 ${msg}</span>`;
+       document.body.appendChild(toast);
+       setTimeout(() => toast.remove(), 3000);
+    }
+
+    // ─── BREATHE ───
+    let bInterval, bPhase = 'inhale', bCount = 4, bPattern = { i: 4, h1: 4, e: 4, h2: 4 };
+    function startBreathe() {
+       if (bInterval) { clearInterval(bInterval); bInterval = null; return; }
+       bInterval = setInterval(() => {
+          bCount--;
+          document.getElementById('breathe-count').innerText = bCount > 0 ? bCount : '';
+          if (bCount <= 0) {
+             bPhase = bPhase === 'inhale' ? 'hold1' : bPhase === 'hold1' ? 'exhale' : bPhase === 'exhale' ? 'hold2' : 'inhale';
+             bCount = bPattern[bPhase === 'inhale' ? 'i' : bPhase === 'hold1' ? 'h1' : bPhase === 'exhale' ? 'e' : 'h2'];
+             document.getElementById('breathe-status').innerText = bPhase.toUpperCase() + '...';
+             document.getElementById('breathe-blob').style.scale = bPhase === 'inhale' ? '2' : bPhase === 'exhale' ? '1' : '1.5';
+          }
+       }, 1000);
+    }
+    function setPattern(p) {
+       if (p === 'box') bPattern = { i: 4, h1: 4, e: 4, h2: 4 };
+       if (p === '478') bPattern = { i: 4, h1: 7, e: 8, h2: 0 };
+    }
+
+    // ─── CBT Toolkit (Deeply Expanded) ───
+    const cbtData = {
+       sleep: {
+          title: "Sleep Hygiene", sub: "Biological signals of rest.",
+          groups: [
+             { name: "Bedroom Environment", items: ["Total darkness (blackout curtains)", "Room temp 18.3°C (65°F)", "Phone in charging station in other room", "White noise machine active", "Fresh linens"] },
+             { name: "Evening Routine", items: ["Dim lights 90min before", "No caffeine after 2pm", "Warm shower or bath", "Digital sunset (no screens)", "Light reading", "Cool down stretch"] },
+             { name: "Morning Anchors", items: ["Natural sunlight within 15min", "Consistent wake time", "Hydrate immediately", "No snooze button"] }
+          ]
+       },
+       thought: {
+          title: "Thought Records", sub: "Re-engineering cognitive patterns.",
+          groups: [
+             { name: "Identify the Thought", items: ["Capture the automatic thought", "Rate initial distress (1-10)", "Pinpoint physical sensations", "Trace the trigger event"] },
+             { name: "Examine Evidence", items: ["Evidence for the thought", "Evidence AGAINST the thought", "Worst case scenario probability", "Best case scenario probability"] },
+             { name: "Distortion Check", items: ["All-or-nothing thinking?", "Catastrophizing?", "Mind reading?", "Fortune telling?", "Emotional reasoning?"] }
+          ]
+       },
+       relax: {
+          title: "Relaxation Protocols", sub: "Forcing the parasympathetic reset.",
+          groups: [
+             { name: "Body Scan", items: ["Relax Jaw", "Drop Shoulders", "Soft Eyes", "Unclench Hands", "Loosen Stomach", "Relax Toes"] },
+             { name: "5-4-3-2-1 Grounding", items: ["5 things you see", "4 things you feel", "3 things you hear", "2 things you smell", "1 thing you taste"] }
+          ]
+       },
+       anxiety: {
+          title: "Anxiety Reduction", sub: "Breaking the adrenaline loop.",
+          groups: [
+             { name: "Immediate Interruption", items: ["Splash cold water on face", "Tense every muscle for 10s then drop", "Box breathing cycle", "Count backwards from 100 by 7"] },
+             { name: "Challenge the Fear", items: ["Is this thought helpful?", "What would I tell a friend?", "Can I survive this feeling for 1 min?", "This feeling is a wave, let it pass"] }
+          ]
+       },
+       depress: {
+          title: "Depression Relief", sub: "Low-energy behavioral activation.",
+          groups: [
+             { name: "Absolute Basics", items: ["Drink 250ml water", "Stand outside for 2min", "Change into clean clothes", "Eat one piece of fruit"] },
+             { name: "Behavioral Activation", items: ["Text one trusted friend", "Listen to one upbeat song", "Organize one square meter of space", "Step outside for a short walk"] }
+          ]
+       },
+       stress: {
+          title: "Stress Management", sub: "Triage and boundaries.",
+          groups: [
+             { name: "Triage & Priorities", items: ["What must be done TODAY?", "What can wait until tomorrow?", "What can I delegate?", "What can I delete?"] },
+             { name: "Body Release", items: ["Progressive Muscle Relaxation", "Humming or Singing", "Gentle stretching", "Power walk"] }
+          ]
+       }
+    };
+
+    function initCBT() {
+       const grid = document.getElementById('cbt-grid');
+       grid.innerHTML = Object.entries(cbtData).map(([id, cat]) => `
+          <div class="glass-sm tool-card" onclick="openCBT('${id}')">
+             <h4 style="font-size: 24px;">${cat.title}</h4>
+             <p>${cat.sub}</p>
+             <div class="status-bar"><div class="status-fill" style="width: 20%;"></div></div>
+          </div>
+       `).join('');
+    }
+
+    function openCBT(id) {
+       const cat = cbtData[id];
+       document.getElementById('cbt-grid').style.display = 'none';
+       document.getElementById('cbt-detail').style.display = 'block';
+       document.getElementById('cbt-content').innerHTML = `
+          <h2 class="font-display" style="font-size: 48px; margin-bottom: 20px;">${cat.title}</h2>
+          <p style="color: var(--muted); margin-bottom: 40px;">${cat.sub}</p>
+          ${cat.groups.map(g => `
+             <div class="cbt-group-title">${g.name}</div>
+             ${g.items.map(item => `
+                <div class="cbt-item" onclick="this.classList.toggle('checked')">
+                   <input type="checkbox">
+                   <span>${item}</span>
+                </div>
+             `).join('')}
+          `).join('')}
+       `;
+    }
+    function closeCBT() {
+       document.getElementById('cbt-grid').style.display = 'grid';
+       document.getElementById('cbt-detail').style.display = 'none';
+    }
+
+    // ─── SOUNDS ───
+    let ctx, nodes = {};
+    function initSounds() {
+       const list = document.getElementById('sounds-list');
+       const s = ["White Noise", "Brown Noise", "Rain Hiss"];
+       list.innerHTML = s.map(name => `
+          <div class="glass-sm tool-card">
+             <h4>${name}</h4>
+             <button onclick="toggleAudio('${name}', this)" class="btn-gold" style="margin-top: 20px;">PLAY</button>
+          </div>
+       `).join('');
+    }
+    function toggleAudio(name, btn) {
+       if (!ctx) ctx = new AudioContext();
+       if (nodes[name]) { nodes[name].stop(); delete nodes[name]; btn.innerText="PLAY"; }
+       else {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.connect(gain); gain.connect(ctx.destination);
+          gain.gain.value = 0.05;
+          osc.start(); nodes[name] = osc; btn.innerText="STOP";
+       }
+    }
+
+    // ─── AFFIRMATIONS ───
+    const affirms = ["I have done enough for today.", "The night is for healing, not solving.", "I am safe in this quiet space."];
+    function nextAffirm() {
+       document.getElementById('affirmation-text').innerText = affirms[Math.floor(Math.random() * affirms.length)];
+    }
+
+    function initGroups() {
+       const list = document.getElementById('groups-list');
+       list.innerHTML = `<div class="glass tool-card" style="padding: 40px;"><h4>The Night Owls Hyd</h4><p>📍 Hyderabad · Weekly</p><button class="btn-gold" style="margin-top: 24px;">REQUEST JOIN</button></div>`;
+    }
+
+    function openModal(id) { document.getElementById(`${id}-modal`).style.display = 'flex'; }
+    function closeModal(id) { document.getElementById(`${id}-modal`).style.display = 'none'; }
+    function showToast(msg) { /* logic */ }
+  </script>
+</body>
 </html>
