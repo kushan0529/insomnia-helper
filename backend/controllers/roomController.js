@@ -35,6 +35,7 @@ exports.joinRoom = async (req, res) => {
 };
 
 exports.leaveRoom = async (req, res) => {
+  console.log('Leaving room:', req.params.id);
   try {
     const room = await Room.findById(req.params.id);
     if (!room) return res.status(404).json({ message: 'Room not found' });

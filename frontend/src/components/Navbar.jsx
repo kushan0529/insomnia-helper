@@ -17,7 +17,7 @@ const Navbar = () => {
     { name: 'Mood', path: '/mood', icon: '💭' },
     { name: 'Programs', path: '/programs', icon: '🧠' },
     { name: 'Circles', path: '/rooms', icon: '⭕' },
-    { name: 'Groups', path: '/groups', icon: '👥' },
+    { name: 'Meetups', path: '/groups', icon: '📍' },
     { name: 'Journal', path: '/journal', icon: '📓' },
   ];
 
@@ -84,7 +84,7 @@ const Navbar = () => {
                   <User size={14} /> Profile
                 </Link>
                 <Link to="/my-groups" onClick={() => setIsDropdownOpen(false)} className="flex items-center justify-between px-4 py-3 text-[13px] text-white/80 hover:bg-g/10 hover:text-g transition-colors">
-                  <span className="flex items-center gap-3"><Moon size={14} /> My Groups</span>
+                  <span className="flex items-center gap-3"><Moon size={14} /> My Meetups</span>
                   {pendingTotal > 0 && <span className="bg-g text-black text-[10px] font-bold px-1.5 py-0.5 rounded-sm">{pendingTotal}</span>}
                 </Link>
                 <Link to="/settings" onClick={() => setIsDropdownOpen(false)} className="flex items-center gap-3 px-4 py-3 text-[13px] text-white/80 hover:bg-g/10 hover:text-g transition-colors">
@@ -102,7 +102,7 @@ const Navbar = () => {
           </div>
         ) : (
           <Link to="/register" className="btn-gold !py-2 !px-5 flex items-center gap-2">
-            Find a Group <ArrowRight size={14} />
+            Find a Meetup <ArrowRight size={14} />
           </Link>
         )}
 

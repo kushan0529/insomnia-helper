@@ -5,8 +5,8 @@ const auth = require('../middleware/auth');
 const nightMode = require('../middleware/nightMode');
 
 router.get('/', getRooms);
+router.post('/:id/leave', auth, leaveRoom);
 router.get('/:id', getRoom);
 router.post('/:id/join', auth, nightMode, joinRoom);
-router.post('/:id/leave', auth, leaveRoom);
 
 module.exports = router;

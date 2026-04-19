@@ -51,17 +51,20 @@ const CreateGroup = () => {
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
       <div className="bg-[#1C1C1C] border border-[#2a2a2a] rounded-2xl p-8 shadow-2xl">
-        <h1 className="text-3xl font-black text-white uppercase tracking-tighter mb-8" style={{ fontFamily: "'Bebas Neue', sans-serif" }}>
-          Host a <span className="text-[#C9A84C]">New Group</span>
+        <h1 className="text-4xl font-black text-white uppercase tracking-tighter mb-8 italic" style={{ fontFamily: "var(--font-heading)" }}>
+          Initiate a <span className="text-[#C9A84C]">Movement</span>
         </h1>
+        <p className="text-[#9A9A9A] text-[13px] mb-10 leading-relaxed italic border-l-2 border-g/30 pl-4">
+          "The first rule of the movement is absolute confidentiality." By starting this meetup, you are creating a face-to-face sanctuary for shared survival.
+        </p>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Title */}
           <div>
-            <label className="block text-sm font-bold text-[#9A9A9A] uppercase mb-2">Group Name</label>
+            <label className="block text-[10px] font-bold text-[#9A9A9A] uppercase tracking-[3px] mb-3">Meetup Identity</label>
             <input 
               type="text"
-              placeholder="e.g. Midnight Solitude Support"
+              placeholder="e.g. The Night Watch [City Name]"
               className={`w-full bg-[#0D0D0D] border ${errors.title ? 'border-red-500' : 'border-[#2a2a2a]'} text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/40 transition-all`}
               value={formData.title}
               onChange={(e) => setFormData({...formData, title: e.target.value})}
@@ -186,11 +189,20 @@ const CreateGroup = () => {
           </div>
 
           {/* Submit */}
+          <div className="bg-g/5 p-6 rounded-xl border border-g/10 mb-8">
+             <div className="flex items-start gap-3">
+                <input type="checkbox" required className="mt-1 accent-g" />
+                <p className="text-[11px] text-[#8892B0] leading-relaxed italic">
+                   I swear to uphold the **Sanctuary Edict**: I will protect the confidentiality of all members and lead this movement with raw honesty and mutual respect.
+                </p>
+             </div>
+          </div>
+
           <button 
             type="submit"
-            className="w-full bg-[#C9A84C] text-black font-black py-4 rounded-lg uppercase tracking-widest hover:bg-[#d4b96a] transition-all transform active:scale-[0.98]"
+            className="w-full bg-[#C9A84C] text-black font-black py-5 rounded-lg uppercase tracking-[4px] hover:bg-[#d4b96a] transition-all transform active:scale-[0.98] shadow-[0_20px_40px_rgba(201,168,76,0.15)]"
           >
-            Post Group
+            LAUNCH MOVEMENT
           </button>
         </form>
       </div>

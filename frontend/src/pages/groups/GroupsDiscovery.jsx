@@ -26,12 +26,12 @@ const GroupsDiscovery = () => {
     <div className="max-w-[1240px] mx-auto px-6 py-12">
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-12">
         <div className="max-w-[600px]">
-          <span className="text-[10px] font-bold tracking-[3px] uppercase text-g mb-3 block">Community Support</span>
-          <h1 className="font-heading text-5xl md:text-6xl font-bold text-white mb-4">
-            Find your <span className="text-g italic">circle.</span>
+          <span className="text-[10px] font-bold tracking-[6px] uppercase text-g mb-6 block">The Underground Movement</span>
+          <h1 className="font-heading text-6xl md:text-8xl font-bold text-white mb-6 uppercase tracking-tight italic">
+            Weekly <span className="text-g">Meetups.</span>
           </h1>
-          <p className="text-[#8892B0] text-sm md:text-[15px] leading-relaxed">
-            Support groups are more than just talking — they are proof that you don't have to face this alone. Host or join a local or online circle.
+          <p className="text-[#8892B0] text-lg leading-relaxed italic opacity-80">
+            "We are not a clinic. We are a movement." Join or lead a confidential, face-to-face sanctuary for local peer support. Real stories, raw truth, and zero judgement.
           </p>
         </div>
         
@@ -76,10 +76,10 @@ const GroupsDiscovery = () => {
           <div className="w-20 h-20 mb-8 rounded-full bg-g/5 border border-g/10 flex items-center justify-center">
             <Users className="text-g/20" size={36} />
           </div>
-          <h3 className="font-heading text-2xl font-bold text-white mb-3 tracking-wide text-pretty">No circles found for this search</h3>
-          <p className="text-[#8892B0] text-sm mb-8 max-w-[320px]">Be the one to start it. Hosting a circle is as helpful to you as it is to them.</p>
-          <Link to="/groups/create" className="btn-gold flex items-center gap-2">
-            <Plus size={18} /> Host a Group
+          <h3 className="font-heading text-3xl font-bold text-white mb-6 uppercase tracking-widest italic">The silence is deafening.</h3>
+          <p className="text-[#8892B0] text-[13px] mb-10 max-w-[360px] opacity-70">No meetups detected in this sector. This is your cue. Stand up, lead the movement, and build the connections your city needs.</p>
+          <Link to="/groups/create" className="btn-gold !px-12 !py-4 flex items-center gap-3">
+             <Plus size={20} /> LEAD A MOVEMENT
           </Link>
         </div>
       )}
