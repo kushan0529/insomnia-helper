@@ -21,7 +21,20 @@ const io = socketIo(server, {
 });
 
 // Middleware
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "https://cdn.razorpay.com"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      imgSrc: ["'self'", "data:", "https://res.cloudinary.com"],
+      connectSrc: ["'self'", "https://api.groq.com", "wss://insomnia-helper.onrender.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      objectSrc: ["'none'"],
+      upgradeInsecureRequests: [],
+    },
+  },
+}));
 app.use(cors());
 app.use(express.json());
 
@@ -66,7 +79,7 @@ app.use('/api/chat', require('./routes/chat'));
 app.use('/api/journal', require('./routes/journal'));
 app.use('/api/cbt', require('./routes/cbt'));
 app.use('/api/payment', require('./routes/payment'));
-// Serve frontend in production
+
 // Serve frontend in production
 if (process.env.NODE_ENV === 'production' || process.env.RENDER) {
   const distPath = path.resolve(__dirname, '../frontend/dist');
@@ -75,11 +88,12 @@ if (process.env.NODE_ENV === 'production' || process.env.RENDER) {
   app.use(express.static(distPath));
 
   // 404 handler for API routes (prevent falling through to index.html)
-  app.all('/api/*splat', (req, res) => {
+  app.all('/api/*', (req, res) => {
     res.status(404).json({ message: `API route ${req.originalUrl} not found` });
   });
 
-  app.get('/{*splat}', (req, res) => {
+  // Handle SPA routing
+  app.get('*', (req, res) => {
     res.sendFile(path.join(distPath, 'index.html'));
   });
   console.log('Serving production build from:', distPath);
