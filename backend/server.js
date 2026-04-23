@@ -75,15 +75,13 @@ if (process.env.NODE_ENV === 'production' || process.env.RENDER) {
   app.use(express.static(distPath));
 
   // 404 handler for API routes (prevent falling through to index.html)
-  app.all('/api/*', (req, res) => {
-    res.status(404).json({ message: `API route ${req.url} not found` });
+  app.all('/api/*splat', (req, res) => {
+    res.status(404).json({ message: `API route ${req.originalUrl} not found` });
   });
 
-  // Handle SPA routing
-  app.get('/*', (req, res) => {
+  app.get('/{*splat}', (req, res) => {
     res.sendFile(path.join(distPath, 'index.html'));
   });
-
   console.log('Serving production build from:', distPath);
 } else {
   app.get('/', (req, res) => {
