@@ -23,7 +23,7 @@ export const registerUser = createAsyncThunk('auth/register', async (userData, {
 
 export const loadUser = createAsyncThunk('auth/loadUser', async (_, { rejectWithValue }) => {
   try {
-    const response = await api.get('/auth/me');
+    const response = await api.post('/auth/me');
     return response.data;
   } catch (error) {
     return rejectWithValue(error.response?.data || { message: 'Session expired' });

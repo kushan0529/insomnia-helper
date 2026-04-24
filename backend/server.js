@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
 const mongoose = require('mongoose');
 const http = require('http');
 const socketIo = require('socket.io');
@@ -81,20 +82,36 @@ app.use('/api/cbt', require('./routes/cbt'));
 app.use('/api/payment', require('./routes/payment'));
 
 // Serve frontend in production
-if (process.env.NODE_ENV === 'production' || process.env.RENDER) {
-  const distPath = path.resolve(__dirname, '../frontend/dist');
+const distPath = path.resolve(__dirname, '../frontend/dist');
+const isProduction = process.env.NODE_ENV === 'production' || process.env.RENDER || fs.existsSync(distPath);
 
+if (isProduction) {
   // Serve static files
   app.use(express.static(distPath));
+
+  // Favicon fallback to prevent 404 errors in browser console
+  app.get('/favicon.ico', (req, res) => {
+    const faviconPath = path.join(distPath, 'favicon.svg');
+    if (fs.existsSync(faviconPath)) {
+      res.sendFile(faviconPath);
+    } else {
+      res.status(204).end();
+    }
+  });
 
   // 404 handler for API routes (prevent falling through to index.html)
   app.all('/api/*', (req, res) => {
     res.status(404).json({ message: `API route ${req.originalUrl} not found` });
   });
 
-  // Handle SPA routing
+  // Handle SPA routing - send all other requests to index.html
   app.get('*', (req, res) => {
-    res.sendFile(path.join(distPath, 'index.html'));
+    const indexPath = path.join(distPath, 'index.html');
+    if (fs.existsSync(indexPath)) {
+      res.sendFile(indexPath);
+    } else {
+      res.status(404).send('Frontend build not found. Please run build script.');
+    }
   });
   console.log('Serving production build from:', distPath);
 } else {
