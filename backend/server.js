@@ -100,12 +100,12 @@ if (isProduction) {
   });
 
   // 404 handler for API routes (prevent falling through to index.html)
-  app.all('/api/(.*)', (req, res) => {
+  app.all('/api/*any', (req, res) => {
     res.status(404).json({ message: `API route ${req.originalUrl} not found` });
   });
 
   // Handle SPA routing - send all other requests to index.html
-  app.get('(.*)', (req, res) => {
+  app.get('/*any', (req, res) => {
     const indexPath = path.join(distPath, 'index.html');
     if (fs.existsSync(indexPath)) {
       res.sendFile(indexPath);
