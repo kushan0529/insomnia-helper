@@ -108,9 +108,15 @@ if (isProduction) {
   app.get('/*any', (req, res) => {
     const indexPath = path.join(distPath, 'index.html');
     if (fs.existsSync(indexPath)) {
-      res.sendFile(indexPath);
+      res.sendFile(indexPath, (err) => {
+        if (err) {
+          console.error('Error sending index.html:', err);
+          res.status(500).send(`Internal Server Error: Could not serve frontend. Path: ${indexPath}`);
+        }
+      });
     } else {
-      res.status(404).send('Frontend build not found. Please run build script.');
+      console.error('Frontend build not found at:', indexPath);
+      res.status(404).send(`Frontend build not found at ${indexPath}. Please ensure your build command includes building the frontend.`);
     }
   });
   console.log('Serving production build from:', distPath);

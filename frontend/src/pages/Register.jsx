@@ -12,7 +12,7 @@ const Register = () => {
   const [loading, setLoading] = useState(false);
   const [isDepressed, setIsDepressed] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { error: authError } = useSelector(state => state.auth || { error: null });
@@ -22,11 +22,11 @@ const Register = () => {
   });
 
   const [formData, setFormData] = useState({
-    username: '', 
-    email: '', 
-    password: '', 
-    city: '', 
-    sleepIssueCategory: 'General', 
+    username: '',
+    email: '',
+    password: '',
+    city: '',
+    sleepIssueCategory: 'General',
     isAnonymous: true
   });
 
@@ -41,7 +41,7 @@ const Register = () => {
       toast.error("Please answer all questions so we can help you best.");
       return;
     }
-    
+
     setLoading(true);
     try {
       const response = await api.post('/ai/depression-check', { answers });
@@ -65,20 +65,20 @@ const Register = () => {
       toast.error("Please provide your name, email, and a secure password.");
       return;
     }
-    
+
     setLoading(true);
-    const finalData = { 
-      username: formData.username.trim(), 
-      email: formData.email.trim().toLowerCase(), 
-      password: formData.password, 
-      city: formData.city.trim() || "Earth", 
-      sleepIssueCategory: formData.sleepIssueCategory, 
+    const finalData = {
+      username: formData.username.trim(),
+      email: formData.email.trim().toLowerCase(),
+      password: formData.password,
+      city: formData.city.trim() || "Earth",
+      sleepIssueCategory: formData.sleepIssueCategory,
       isAnonymous: formData.isAnonymous,
       isDepressed: Boolean(isDepressed)
     };
-    
+
     const result = await dispatch(registerUser(finalData));
-    
+
     if (registerUser.fulfilled.match(result)) {
       setPhase(4);
       setTimeout(() => navigate('/dashboard'), 3000);
@@ -111,18 +111,17 @@ const Register = () => {
                 <h1 className="font-heading text-3xl font-bold text-white mb-2">Self‑Check</h1>
                 <p className="font-body text-[13px] text-[#8892B0] uppercase tracking-[3px]">Evaluating your state</p>
               </div>
-              
+
               <div className="space-y-8">
                 <div className="space-y-3">
                   <label className="text-[10px] font-bold text-g/60 tracking-[2px] uppercase">How often do you feel hopeless?</label>
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className="grid grid-cols-4 gap-2">
                     {['Never', 'Sometimes', 'Always'].map(opt => (
-                      <button 
+                      <button
                         key={opt} type="button"
-                        onClick={() => setAnswers({...answers, q1: opt})}
-                        className={`py-3 rounded-xl text-[11px] font-bold transition-all border ${
-                          answers.q1 === opt ? 'bg-g/10 border-g text-g' : 'bg-s1/30 border-white/5 text-[#8892B0] hover:text-white'
-                        }`}
+                        onClick={() => setAnswers({ ...answers, q1: opt })}
+                        className={`py-3 rounded-xl text-[11px] font-bold transition-all border ${answers.q1 === opt ? 'bg-g/10 border-g text-g' : 'bg-s1/30 border-white/5 text-[#8892B0] hover:text-white'
+                          }`}
                       >{opt}</button>
                     ))}
                   </div>
@@ -132,12 +131,11 @@ const Register = () => {
                   <label className="text-[10px] font-bold text-g/60 tracking-[2px] uppercase">Hours slept last night?</label>
                   <div className="grid grid-cols-4 gap-2">
                     {['0-2', '3-5', '6-8', '8+'].map(opt => (
-                      <button 
+                      <button
                         key={opt} type="button"
-                        onClick={() => setAnswers({...answers, q2: opt})}
-                        className={`py-3 rounded-xl text-[11px] font-bold transition-all border ${
-                          answers.q2 === opt ? 'bg-g/10 border-g text-g' : 'bg-s1/30 border-white/5 text-[#8892B0] hover:text-white'
-                        }`}
+                        onClick={() => setAnswers({ ...answers, q2: opt })}
+                        className={`py-3 rounded-xl text-[11px] font-bold transition-all border ${answers.q2 === opt ? 'bg-g/10 border-g text-g' : 'bg-s1/30 border-white/5 text-[#8892B0] hover:text-white'
+                          }`}
                       >{opt}</button>
                     ))}
                   </div>
@@ -147,12 +145,11 @@ const Register = () => {
                   <label className="text-[10px] font-bold text-g/60 tracking-[2px] uppercase">Are you feeling disconnected?</label>
                   <div className="grid grid-cols-3 gap-2">
                     {['Yes', 'No', 'Partly'].map(opt => (
-                      <button 
+                      <button
                         key={opt} type="button"
-                        onClick={() => setAnswers({...answers, q3: opt})}
-                        className={`py-3 rounded-xl text-[11px] font-bold transition-all border ${
-                          answers.q3 === opt ? 'bg-g/10 border-g text-g' : 'bg-s1/30 border-white/5 text-[#8892B0] hover:text-white'
-                        }`}
+                        onClick={() => setAnswers({ ...answers, q3: opt })}
+                        className={`py-3 rounded-xl text-[11px] font-bold transition-all border ${answers.q3 === opt ? 'bg-g/10 border-g text-g' : 'bg-s1/30 border-white/5 text-[#8892B0] hover:text-white'
+                          }`}
                       >{opt}</button>
                     ))}
                   </div>
@@ -162,18 +159,17 @@ const Register = () => {
                   <label className="text-[10px] font-bold text-g/60 tracking-[2px] uppercase">Any intrusive thoughts?</label>
                   <div className="grid grid-cols-2 gap-3">
                     {['Yes', 'No'].map(opt => (
-                      <button 
+                      <button
                         key={opt} type="button"
-                        onClick={() => setAnswers({...answers, q5: opt.toUpperCase()})}
-                        className={`py-3 rounded-xl text-[11px] font-bold transition-all border ${
-                          answers.q5 === opt.toUpperCase() ? 'bg-g/10 border-g text-g' : 'bg-s1/30 border-white/5 text-[#8892B0] hover:text-white'
-                        }`}
+                        onClick={() => setAnswers({ ...answers, q5: opt })}
+                        className={`py-3 rounded-xl text-[11px] font-bold transition-all border ${answers.q5 === opt.toUpperCase() ? 'bg-g/10 border-g text-g' : 'bg-s1/30 border-white/5 text-[#8892B0] hover:text-white'
+                          }`}
                       >{opt}</button>
                     ))}
                   </div>
                 </div>
 
-                <button 
+                <button
                   onClick={handleAssessmentSubmit}
                   disabled={loading}
                   className="btn-gold w-full flex items-center justify-center gap-2 mt-4"
@@ -198,12 +194,12 @@ const Register = () => {
               </div>
               <h1 className="font-heading text-3xl font-bold text-white mb-3"> Analysis Complete </h1>
               <p className="font-body text-[14px] text-[#8892B0] leading-relaxed mb-10">
-                {isDepressed ? 
-                  "Our system senses some heavy fragmentation. We are here to support you." : 
+                {isDepressed ?
+                  "Our system senses some heavy fragmentation. We are here to support you." :
                   "You seem stable but vulnerable. You've come to the right place."}
               </p>
-              
-              <button 
+
+              <button
                 onClick={() => setPhase(3)}
                 className="btn-gold w-full flex items-center justify-center gap-2"
               >
@@ -230,12 +226,12 @@ const Register = () => {
                   <label className="text-[10px] font-bold text-g/60 tracking-[2px] uppercase ml-1">Preferred Alias</label>
                   <div className="relative">
                     <User className="absolute left-4 top-1/2 -translate-y-1/2 text-[#4A5370]" size={16} />
-                    <input 
+                    <input
                       name="username"
                       className="w-full bg-s1/30 border border-white/5 p-3.5 pl-12 font-body text-[14px] text-white outline-none focus:border-g/30 transition-all rounded-xl"
                       placeholder="What should we call you?"
                       value={formData.username}
-                      onChange={(e) => setFormData({...formData, username: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, username: e.target.value })}
                     />
                   </div>
                 </div>
@@ -244,13 +240,13 @@ const Register = () => {
                   <label className="text-[10px] font-bold text-g/60 tracking-[2px] uppercase ml-1">Security Email</label>
                   <div className="relative">
                     <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-[#4A5370]" size={16} />
-                    <input 
+                    <input
                       type="email"
                       name="email"
                       className="w-full bg-s1/30 border border-white/5 p-3.5 pl-12 font-body text-[14px] text-white outline-none focus:border-g/30 transition-all rounded-xl"
                       placeholder="External signal point"
                       value={formData.email}
-                      onChange={(e) => setFormData({...formData, email: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     />
                   </div>
                 </div>
@@ -259,15 +255,15 @@ const Register = () => {
                   <label className="text-[10px] font-bold text-g/60 tracking-[2px] uppercase ml-1">Security Key</label>
                   <div className="relative">
                     <Shield className="absolute left-4 top-1/2 -translate-y-1/2 text-[#4A5370]" size={16} />
-                    <input 
+                    <input
                       type={showPassword ? "text" : "password"}
                       name="password"
                       className="w-full bg-s1/30 border border-white/5 p-3.5 pl-12 pr-12 font-body text-[14px] text-white outline-none focus:border-g/30 transition-all rounded-xl"
                       placeholder="••••••••"
                       value={formData.password}
-                      onChange={(e) => setFormData({...formData, password: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                     />
-                    <button 
+                    <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
                       className="absolute right-4 top-1/2 -translate-y-1/2 text-[#4A5370] hover:text-g transition-colors"
@@ -281,30 +277,30 @@ const Register = () => {
                   <label className="text-[10px] font-bold text-g/60 tracking-[2px] uppercase ml-1">City / Location</label>
                   <div className="relative">
                     <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-[#4A5370]" size={16} />
-                    <input 
+                    <input
                       name="city"
                       className="w-full bg-s1/30 border border-white/5 p-3.5 pl-12 font-body text-[14px] text-white outline-none focus:border-g/30 transition-all rounded-xl"
                       placeholder="Where are you tonight?"
                       value={formData.city}
-                      onChange={(e) => setFormData({...formData, city: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                     />
                   </div>
                 </div>
 
                 <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/10 cursor-pointer mt-2"
-                     onClick={() => setFormData({...formData, isAnonymous: !formData.isAnonymous})}>
-                   <div>
-                      <div className={`text-[11px] font-bold tracking-wider uppercase ${formData.isAnonymous ? 'text-g' : 'text-[#8892B0]'}`}>
-                        {formData.isAnonymous ? "Anonymous Member" : "Known Profile"}
-                      </div>
-                      <p className="text-[9px] text-[#4A5370] uppercase">Toggle Privacy</p>
-                   </div>
-                   <div className={`w-10 h-5 flex items-center p-1 rounded-full transition-colors ${formData.isAnonymous ? 'bg-g' : 'bg-gray-800'}`}>
-                      <div className={`w-3 h-3 bg-white rounded-full transition-all ${formData.isAnonymous ? 'ml-auto' : 'mr-auto'}`} />
-                   </div>
+                  onClick={() => setFormData({ ...formData, isAnonymous: !formData.isAnonymous })}>
+                  <div>
+                    <div className={`text-[11px] font-bold tracking-wider uppercase ${formData.isAnonymous ? 'text-g' : 'text-[#8892B0]'}`}>
+                      {formData.isAnonymous ? "Anonymous Member" : "Known Profile"}
+                    </div>
+                    <p className="text-[9px] text-[#4A5370] uppercase">Toggle Privacy</p>
+                  </div>
+                  <div className={`w-10 h-5 flex items-center p-1 rounded-full transition-colors ${formData.isAnonymous ? 'bg-g' : 'bg-gray-800'}`}>
+                    <div className={`w-3 h-3 bg-white rounded-full transition-all ${formData.isAnonymous ? 'ml-auto' : 'mr-auto'}`} />
+                  </div>
                 </div>
 
-                <button 
+                <button
                   type="submit"
                   disabled={loading}
                   className="btn-gold w-full flex items-center justify-center gap-2 mt-4"
@@ -329,7 +325,7 @@ const Register = () => {
             >
               <div className="w-24 h-24 rounded-full border-2 border-g/30 flex items-center justify-center mx-auto mb-8 relative">
                 <CheckCircle2 className="text-g" size={48} />
-                <motion.div 
+                <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1.5, opacity: 0 }}
                   transition={{ duration: 1, repeat: Infinity }}
