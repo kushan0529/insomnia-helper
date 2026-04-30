@@ -6,6 +6,8 @@ import { useNavigate, Link } from 'react-router-dom';
 import api from '../api';
 import { toast } from 'react-hot-toast';
 import { registerUser } from '../redux/slices/authSlice';
+import { LogInIcon } from 'lucide-react';
+
 
 const Register = () => {
   const [phase, setPhase] = useState(1);
@@ -18,7 +20,7 @@ const Register = () => {
   const { error: authError } = useSelector(state => state.auth || { error: null });
 
   const [answers, setAnswers] = useState({
-    q1: '', q2: '', q3: '', q4: 5, q5: ''
+    q1: '', q2: '', q3: '', q4: '', q5: ''
   });
 
   const [formData, setFormData] = useState({
@@ -26,8 +28,7 @@ const Register = () => {
     email: '',
     password: '',
     city: '',
-    sleepIssueCategory: 'General',
-    isAnonymous: true
+    sleepIssueCategory: 'General'
   });
 
   useEffect(() => {
@@ -37,7 +38,7 @@ const Register = () => {
   }, [authError]);
 
   const handleAssessmentSubmit = async () => {
-    if (!answers.q1 || !answers.q2 || !answers.q3 || !answers.q5) {
+    if (!answers.q1 || !answers.q2 || !answers.q3 || !answers.q4 || !answers.q5) {
       toast.error("Please answer all questions so we can help you best.");
       return;
     }
@@ -73,7 +74,6 @@ const Register = () => {
       password: formData.password,
       city: formData.city.trim() || "Earth",
       sleepIssueCategory: formData.sleepIssueCategory,
-      isAnonymous: formData.isAnonymous,
       isDepressed: Boolean(isDepressed)
     };
 
@@ -156,13 +156,23 @@ const Register = () => {
                 </div>
 
                 <div className="space-y-3">
-                  <label className="text-[10px] font-bold text-g/60 tracking-[2px] uppercase">Any intrusive thoughts?</label>
-                  <div className="grid grid-cols-2 gap-3">
-                    {['Yes', 'No'].map(opt => (
+                  <label className="text-[10px] font-bold text-g/60 tracking-[2px] uppercase">What is making you feel lonely/depressed?</label>
+                  <textarea
+                    className="w-full bg-s1/30 border border-white/5 p-3.5 font-body text-[13px] text-white outline-none focus:border-g/30 transition-all rounded-xl resize-none h-24"
+                    placeholder="Tell us what's on your mind..."
+                    value={answers.q4}
+                    onChange={(e) => setAnswers({ ...answers, q4: e.target.value })}
+                  />
+                </div>
+
+                <div className="space-y-3">
+                  <label className="text-[10px] font-bold text-g/60 tracking-[2px] uppercase">Rate your current mood (1-5)</label>
+                  <div className="grid grid-cols-5 gap-2">
+                    {['1', '2', '3', '4', '5'].map(opt => (
                       <button
                         key={opt} type="button"
                         onClick={() => setAnswers({ ...answers, q5: opt })}
-                        className={`py-3 rounded-xl text-[11px] font-bold transition-all border ${answers.q5 === opt.toUpperCase() ? 'bg-g/10 border-g text-g' : 'bg-s1/30 border-white/5 text-[#8892B0] hover:text-white'
+                        className={`py-3 rounded-xl text-[11px] font-bold transition-all border ${answers.q5 === opt ? 'bg-g/10 border-g text-g' : 'bg-s1/30 border-white/5 text-[#8892B0] hover:text-white'
                           }`}
                       >{opt}</button>
                     ))}
@@ -287,18 +297,6 @@ const Register = () => {
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/10 cursor-pointer mt-2"
-                  onClick={() => setFormData({ ...formData, isAnonymous: !formData.isAnonymous })}>
-                  <div>
-                    <div className={`text-[11px] font-bold tracking-wider uppercase ${formData.isAnonymous ? 'text-g' : 'text-[#8892B0]'}`}>
-                      {formData.isAnonymous ? "Anonymous Member" : "Known Profile"}
-                    </div>
-                    <p className="text-[9px] text-[#4A5370] uppercase">Toggle Privacy</p>
-                  </div>
-                  <div className={`w-10 h-5 flex items-center p-1 rounded-full transition-colors ${formData.isAnonymous ? 'bg-g' : 'bg-gray-800'}`}>
-                    <div className={`w-3 h-3 bg-white rounded-full transition-all ${formData.isAnonymous ? 'ml-auto' : 'mr-auto'}`} />
-                  </div>
-                </div>
 
                 <button
                   type="submit"
@@ -337,6 +335,11 @@ const Register = () => {
             </motion.div>
           )}
         </AnimatePresence>
+      </div>
+      <div className="mt-10 pt-8 border-t border-white/5 text-center flex flex-col gap-4">
+        <p className="text-[12px] text-[#4A5370] uppercase tracking-widest leading-loose">
+          Already a recruit? <Link to="/login" className="text-g hover:text-white transition-colors underline underline-offset-4 decoration-g/30">Sign In</Link>
+        </p>
       </div>
     </div>
   );

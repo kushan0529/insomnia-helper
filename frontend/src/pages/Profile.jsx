@@ -81,10 +81,7 @@ const Profile = () => {
           <div className="mt-12 pt-12 border-t border-white/5">
              <h3 className="font-heading text-xl font-bold text-white mb-6 tracking-wide">Privacy Preferences</h3>
              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="p-4 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-between">
-                   <span className="text-[12px] font-bold text-[#8892B0] uppercase tracking-wider">Anonymous Mode</span>
-                   <span className="text-xs text-g font-bold uppercase">Active</span>
-                </div>
+
                 <div className="p-4 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-between">
                    <span className="text-[12px] font-bold text-[#8892B0] uppercase tracking-wider">Public Profile</span>
                    <span className="text-xs text-red-400 font-bold uppercase">Hidden</span>

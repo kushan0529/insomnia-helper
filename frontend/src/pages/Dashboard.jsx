@@ -28,7 +28,7 @@ const Dashboard = () => {
   const modules = [
     {
       title: "Shadow Talk",
-      tagline: "Anonymous Support",
+      tagline: "Peer Support",
       desc: "Connect safely with others who understand the weight of the night.",
       icon: <MessageSquare size={24} />,
       path: "/shadow-talk",

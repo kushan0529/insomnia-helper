@@ -29,7 +29,6 @@ import ShadowTalk from './pages/ShadowTalk';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
 import StoryDetail from './pages/StoryDetail';
-import Mood from './pages/Mood';
 import Affirmations from './pages/Affirmations';
 import { getCurrentUser, setCurrentUser, getGroups } from './utils/groups';
 
@@ -114,7 +113,6 @@ const AppContent = () => {
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           
-          <Route path="/mood" element={<Mood />} />
           <Route path="/affirmations" element={<Affirmations />} />
           <Route path="/dashboard" element={token ? <Dashboard /> : <Navigate to="/login" />} />
           <Route path="/my-stories" element={token ? <MyStories /> : <Navigate to="/login" />} />

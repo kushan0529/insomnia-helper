@@ -32,24 +32,15 @@ const LeftSidebar = () => {
           <span className="bg-fc-red/80 px-2 py-0.5 rounded text-[10px] font-mono uppercase">
             {user?.sleepIssueCategory || 'General'}
           </span>
-          {user?.isAnonymous && (
-             <span className="bg-white/10 px-2 py-0.5 rounded text-[10px] font-mono uppercase opacity-50">
-               ANONYMOUS
-             </span>
-          )}
         </div>
-        <div className="grid grid-cols-3 gap-2 text-center border-t border-white/10 pt-4">
+        <div className="grid grid-cols-2 gap-2 text-center border-t border-white/10 pt-4">
           <div>
             <div className="text-fc-gold font-heading text-sm">12</div>
             <div className="text-[9px] opacity-40">POSTS</div>
           </div>
-          <div className="border-x border-white/10">
+          <div className="border-l border-white/10">
             <div className="text-fc-gold font-heading text-sm">4</div>
             <div className="text-[9px] opacity-40">STREAK</div>
-          </div>
-          <div>
-            <div className="text-fc-gold font-heading text-sm">⚡</div>
-            <div className="text-[9px] opacity-40">MOOD</div>
           </div>
         </div>
       </div>
@@ -72,9 +63,9 @@ const LeftSidebar = () => {
           AWAKE RIGHT NOW
         </div>
         <div className="flex -space-x-3">
-          {[1,2,3,4,5].map(i => (
+          {[1, 2, 3, 4, 5].map(i => (
             <div key={i} className="relative w-8 h-8 rounded-full bg-fc-grey border-2 border-fc-black overflow-hidden">
-               <div className="absolute top-0 right-0 w-2 h-2 bg-green-500 rounded-full border border-black shadow-sm" />
+              <div className="absolute top-0 right-0 w-2 h-2 bg-green-500 rounded-full border border-black shadow-sm" />
             </div>
           ))}
           <div className="w-8 h-8 rounded-full bg-white/5 border-2 border-fc-black flex items-center justify-center text-[9px] font-heading">

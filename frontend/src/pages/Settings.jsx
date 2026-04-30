@@ -17,7 +17,7 @@ const Settings = () => {
 
       <div className="space-y-4">
         {[
-          { icon: <Shield size={20} />, title: "Privacy Vault", desc: "Manage your anonymous identity and data encryption.", active: true },
+          { icon: <Shield size={20} />, title: "Privacy Vault", desc: "Manage your data encryption and privacy settings.", active: true },
           { icon: <Bell size={20} />, title: "Gentle Reminders", desc: "Nudges for breathing sessions and sleep schedules.", active: false },
           { icon: <Eye size={20} />, title: "Aesthetic Mode", desc: "Toggle between high-cinematic and focused interfaces.", active: true },
           { icon: <Zap size={20} />, title: "Instant Access", desc: "Enable quick-actions for high-stress moments.", active: false }
