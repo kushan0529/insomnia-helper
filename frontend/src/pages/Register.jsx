@@ -335,12 +335,13 @@ const Register = () => {
             </motion.div>
           )}
         </AnimatePresence>
+        <div className="mt-10 pt-8 border-t border-white/5 text-center flex flex-col gap-4">
+          <p className="text-[12px] text-[#4A5370] uppercase tracking-widest leading-loose">
+            Already a recruit? <Link to="/login" className="text-g hover:text-white transition-colors underline underline-offset-4 decoration-g/30">Sign In</Link>
+          </p>
+        </div>
       </div>
-      <div className="mt-10 pt-8 border-t border-white/5 text-center flex flex-col gap-4">
-        <p className="text-[12px] text-[#4A5370] uppercase tracking-widest leading-loose">
-          Already a recruit? <Link to="/login" className="text-g hover:text-white transition-colors underline underline-offset-4 decoration-g/30">Sign In</Link>
-        </p>
-      </div>
+
     </div>
   );
 };
